@@ -7,7 +7,7 @@ const sep10_1 = require("../middleware/sep10");
 const config_1 = require("../config");
 const store_1 = require("../store");
 const router = (0, express_1.Router)();
-/** Per-transaction fields AfroPay needs to deliver an off-chain payment. */
+/** Per-transaction fields RemitX needs to deliver an off-chain payment. */
 const TRANSACTION_FIELDS = {
     receiver_account_number: {
         description: "Bank account or mobile-money number of the receiving customer",

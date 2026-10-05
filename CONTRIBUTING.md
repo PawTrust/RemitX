@@ -1,6 +1,6 @@
-# Contributing to AfroPay
+# Contributing to RemitX
 
-Thank you for your interest in contributing to AfroPay — the open-source decentralised remittance protocol on Stellar. This document is the single source of truth for contributing guidelines.
+Thank you for your interest in contributing to RemitX — the open-source decentralised remittance protocol on Stellar. This document is the single source of truth for contributing guidelines.
 
 > **Security issues** must not be opened as public GitHub issues. See [SECURITY.md](SECURITY.md) for the responsible-disclosure process.
 
@@ -26,7 +26,7 @@ Thank you for your interest in contributing to AfroPay — the open-source decen
 ## Repository Structure
 
 ```
-afropay-stellar-contract/
+remitx/
 ├── src/                          # Root remittance contract (soroban-sdk 20.5.0)
 │   ├── lib.rs                    # Crate root, module declarations
 │   ├── contract.rs               # RemittanceContract — all entry points
@@ -34,7 +34,7 @@ afropay-stellar-contract/
 │   ├── oracle.rs                 # OracleAttestation + signature verification
 │   ├── errors.rs                 # RemittanceError enum (26 error codes)
 │   ├── events.rs                 # EventEmitter — on-chain audit trail
-│   └── bin/afropay.rs            # WASM binary entry point
+│   └── bin/remitx.rs            # WASM binary entry point
 ├── contracts/
 │   └── escrow/                   # Standalone escrow contract (soroban-sdk 21.0.0)
 │       └── src/
@@ -74,8 +74,8 @@ afropay-stellar-contract/
 ### Clone and Build
 
 ```bash
-git clone https://github.com/afropay/afropay-stellar-contract.git
-cd afropay-stellar-contract
+git clone https://github.com/remitx/remitx.git
+cd remitx
 
 # Build root remittance contract
 cargo build --target wasm32-unknown-unknown --release
@@ -141,7 +141,7 @@ Branch names must be kebab-case and descriptive. Avoid generic names like `fix/b
 
 ## Commit Message Format
 
-AfroPay uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+RemitX uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ```
 <type>(<scope>): <short summary>
@@ -272,7 +272,7 @@ If your change cannot reasonably be tested (e.g., a docs-only PR), say so in the
 
 ## Architecture Decision Records (ADRs)
 
-AfroPay uses the [MADR format](https://adr.github.io/madr/) for Architecture Decision Records. The full process is documented in [docs/adr/README.md](docs/adr/README.md).
+RemitX uses the [MADR format](https://adr.github.io/madr/) for Architecture Decision Records. The full process is documented in [docs/adr/README.md](docs/adr/README.md).
 
 **When is an ADR required?**
 
@@ -380,4 +380,4 @@ Before opening a new issue, search existing issues to avoid duplicates.
 
 ## License
 
-By contributing to AfroPay you agree that your contributions will be licensed under the [Apache 2.0 License](LICENSE).
+By contributing to RemitX you agree that your contributions will be licensed under the [Apache 2.0 License](LICENSE).

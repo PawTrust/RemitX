@@ -1,4 +1,4 @@
-# AfroPay — STRIDE Threat Analysis
+# RemitX — STRIDE Threat Analysis
 
 **Version:** 1.0.0  
 **Date:** 2026-07-30  
@@ -54,7 +54,7 @@ Severity scale:
 
 **Residual Risk:** HS256 tokens remain in use for SEP-12/31 routes. Secret rotation procedure and minimum entropy requirements are not enforced in code. A leaked secret grants permanent impersonation until manually rotated.
 
-**Issue:** [#TM-001](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-001+Enforce+JWT+secret+minimum+entropy+and+rotation+policy) — Enforce minimum 256-bit JWT secret and document rotation runbook.
+**Issue:** [#TM-001](https://github.com/remitx/remitx/issues/new?title=TM-001+Enforce+JWT+secret+minimum+entropy+and+rotation+policy) — Enforce minimum 256-bit JWT secret and document rotation runbook.
 
 ---
 
@@ -72,7 +72,7 @@ Severity scale:
 
 **Residual Risk:** No server-side `jti` denylist — a captured JWT remains valid until expiry. If `jwtExpirySeconds` is long, a stolen JWT cannot be revoked.
 
-**Issue:** [#TM-002](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-002+Add+JWT+jti+denylist+for+logout+and+token+revocation)
+**Issue:** [#TM-002](https://github.com/remitx/remitx/issues/new?title=TM-002+Add+JWT+jti+denylist+for+logout+and+token+revocation)
 
 ---
 
@@ -90,7 +90,7 @@ Severity scale:
 
 **Residual Risk:** No server-side rate quote binding — the API does not verify that the submitted amount matches a quote it previously issued. An attacker can submit any positive amount.
 
-**Issue:** [#TM-003](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-003+Bind+escrow+creation+to+server-issued+rate+quote)
+**Issue:** [#TM-003](https://github.com/remitx/remitx/issues/new?title=TM-003+Bind+escrow+creation+to+server-issued+rate+quote)
 
 ---
 
@@ -124,7 +124,7 @@ Severity scale:
 
 **Residual Risk:** No connection limit per IP, no authentication requirement, no rate limiting on the stream endpoint.
 
-**Issue:** [#TM-005](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-005+Rate-limit+SSE+stream+endpoint+and+require+authentication)
+**Issue:** [#TM-005](https://github.com/remitx/remitx/issues/new?title=TM-005+Rate-limit+SSE+stream+endpoint+and+require+authentication)
 
 ---
 
@@ -142,7 +142,7 @@ Severity scale:
 
 **Residual Risk:** Cache poisoning window of up to 1 hour. No TOFU (trust-on-first-use) pinning of the anchor key.
 
-**Issue:** [#TM-006](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-006+Pin+anchor+signing+key+in+config+and+use+toml+as+secondary+check)
+**Issue:** [#TM-006](https://github.com/remitx/remitx/issues/new?title=TM-006+Pin+anchor+signing+key+in+config+and+use+toml+as+secondary+check)
 
 
 ---
@@ -167,7 +167,7 @@ Severity scale:
 
 **Residual Risk:** Relayer key compromise allows submitting malformed or spam transactions, draining transaction fees, and griefing the service. If the relayer is also the oracle operator key, compromise enables `release_to_agent` calls.
 
-**Issue:** [#TM-007](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-007+Separate+relayer+and+oracle+operator+keys+and+use+HSM+or+KMS)
+**Issue:** [#TM-007](https://github.com/remitx/remitx/issues/new?title=TM-007+Separate+relayer+and+oracle+operator+keys+and+use+HSM+or+KMS)
 
 ---
 
@@ -185,7 +185,7 @@ Severity scale:
 
 **Residual Risk:** **Verification is not implemented.** Any registered oracle can steal all escrowed funds for any escrow they target. This is a Critical pre-deployment blocker.
 
-**Issue:** [#TM-008](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-008+CRITICAL+Implement+Ed25519+signature+verification+in+OracleAttestation) — **BLOCKER: must be resolved before mainnet.**
+**Issue:** [#TM-008](https://github.com/remitx/remitx/issues/new?title=TM-008+CRITICAL+Implement+Ed25519+signature+verification+in+OracleAttestation) — **BLOCKER: must be resolved before mainnet.**
 
 ---
 
@@ -197,13 +197,13 @@ Severity scale:
 | **Severity** | High |
 | **Affected** | `src/oracle.rs` — `OracleAttestation`, `src/contract.rs` — `release_to_agent()` |
 
-**Description:** Even with proper signature verification, a valid attestation for escrow `A` could be replayed against escrow `B` if the signed message does not uniquely bind the attestation to the escrow. The current message format (`AFROPAY_ATTESTATION|escrow_id|...`) includes the escrow ID, but the contract does not record used nonces.
+**Description:** Even with proper signature verification, a valid attestation for escrow `A` could be replayed against escrow `B` if the signed message does not uniquely bind the attestation to the escrow. The current message format (`REMITX_ATTESTATION|escrow_id|...`) includes the escrow ID, but the contract does not record used nonces.
 
 **Current Mitigation:** Message includes `escrow_id`, `timestamp`, and `nonce` fields. Escrow state machine (`Locked → Released`) prevents double-release of the same escrow.
 
 **Residual Risk:** Nonces are not stored on-chain, so a nonce cannot be checked for uniqueness across different escrows with the same oracle. Timestamp window attacks remain possible if oracle clock drift is large.
 
-**Issue:** [#TM-009](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-009+Store+used+attestation+nonces+on-chain+to+prevent+replay)
+**Issue:** [#TM-009](https://github.com/remitx/remitx/issues/new?title=TM-009+Store+used+attestation+nonces+on-chain+to+prevent+replay)
 
 ---
 
@@ -221,7 +221,7 @@ Severity scale:
 
 **Residual Risk:** Multi-sig is not enforced in code — the contract accepts a single admin address. No on-chain timelock on admin actions. Single point of failure.
 
-**Issue:** [#TM-010](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-010+Enforce+multi-sig+admin+threshold+in+contract+and+add+upgrade+timelock)
+**Issue:** [#TM-010](https://github.com/remitx/remitx/issues/new?title=TM-010+Enforce+multi-sig+admin+threshold+in+contract+and+add+upgrade+timelock)
 
 ---
 
@@ -278,7 +278,7 @@ Severity scale:
 
 **Residual Risk:** No runtime secret rotation. If a secret is leaked, all historical and future events can be forged until manually rotated. Secret storage security depends entirely on deployment environment.
 
-**Issue:** [#TM-011](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-011+Document+webhook+secret+rotation+procedure+and+add+monitoring+alert)
+**Issue:** [#TM-011](https://github.com/remitx/remitx/issues/new?title=TM-011+Document+webhook+secret+rotation+procedure+and+add+monitoring+alert)
 
 ---
 
@@ -296,7 +296,7 @@ Severity scale:
 
 **Residual Risk:** Idempotency store is currently in-memory (`Map`). On API restart, all idempotency records are lost and replays would be re-processed. No timestamp/age check on webhook delivery.
 
-**Issue:** [#TM-012](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts)
+**Issue:** [#TM-012](https://github.com/remitx/remitx/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts)
 
 ---
 
@@ -340,13 +340,13 @@ Severity scale:
 | **Severity** | High |
 | **Affected** | `api/webhooks/flutterwave.ts`, `api/webhooks/paystack.ts`, `api/webhooks/idempotency-store.ts` |
 
-**Description:** If the idempotency store is not durable, AfroPay cannot prove to a user or regulator which webhook events were received and processed. A PSP could claim a payment was confirmed while AfroPay has no record, or vice versa.
+**Description:** If the idempotency store is not durable, RemitX cannot prove to a user or regulator which webhook events were received and processed. A PSP could claim a payment was confirmed while RemitX has no record, or vice versa.
 
 **Current Mitigation:** `insertRecord` stores `receivedAt`, `status`, and `responseBody`. DB migration `001_webhook_idempotency.sql` exists for persistent storage.
 
 **Residual Risk:** The in-memory idempotency store in `idempotency-store.ts` is not backed by Postgres in the current implementation — the SQL migration exists but the TypeScript store uses a `Map`. Audit trail is lost on restart.
 
-**Issue:** [#TM-012](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) (same as TB3-002)
+**Issue:** [#TM-012](https://github.com/remitx/remitx/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) (same as TB3-002)
 
 
 ---
@@ -371,7 +371,7 @@ Severity scale:
 
 **Residual Risk:** No TLS certificate pinning. No fallback to a secondary Horizon instance. A MITM on the Horizon connection can fabricate confirmations with high impact.
 
-**Issue:** [#TM-013](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-013+Add+secondary+Horizon+endpoint+and+document+TLS+pinning+policy)
+**Issue:** [#TM-013](https://github.com/remitx/remitx/issues/new?title=TM-013+Add+secondary+Horizon+endpoint+and+document+TLS+pinning+policy)
 
 ---
 
@@ -405,7 +405,7 @@ Severity scale:
 
 **Residual Risk:** No automated XLM balance monitoring alert. No fee-bump transaction fallback. No documented minimum XLM balance for operations.
 
-**Issue:** [#TM-014](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-014+Add+XLM+balance+monitoring+alert+and+minimum+balance+runbook)
+**Issue:** [#TM-014](https://github.com/remitx/remitx/issues/new?title=TM-014+Add+XLM+balance+monitoring+alert+and+minimum+balance+runbook)
 
 ---
 
@@ -417,7 +417,7 @@ Severity scale:
 | **Severity** | Medium |
 | **Affected** | `services/listener/horizonStream.ts`, `api/routes/escrow.ts` |
 
-**Description:** Public Horizon instances enforce rate limits. If AfroPay's IP is rate-limited (due to high transaction volume, a bug causing request storms, or a targeted attack using AfroPay's IP range), all Horizon interactions — event listening, transaction submission, account lookups — fail simultaneously.
+**Description:** Public Horizon instances enforce rate limits. If RemitX's IP is rate-limited (due to high transaction volume, a bug causing request storms, or a targeted attack using RemitX's IP range), all Horizon interactions — event listening, transaction submission, account lookups — fail simultaneously.
 
 **Current Mitigation:** Reconnect delay with backoff (`reconnectDelayMs`). Prometheus counters for gap alerts.
 
@@ -462,7 +462,7 @@ Severity scale:
 
 **Residual Risk:** Only three providers — a 2-of-3 compromise flips the median. Outlier threshold (2%) is configurable but not enforced as a minimum. Stellar DEX is the most manipulable source (thin order books for NGN/USDC). No circuit breaker that halts deposits when rate deviation is extreme.
 
-**Issue:** [#TM-015](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-015+Add+fourth+rate+provider+and+circuit-breaker+for+extreme+rate+deviation)
+**Issue:** [#TM-015](https://github.com/remitx/remitx/issues/new?title=TM-015+Add+fourth+rate+provider+and+circuit-breaker+for+extreme+rate+deviation)
 
 ---
 
@@ -480,7 +480,7 @@ Severity scale:
 
 **Residual Risk:** It is not enforced in code that all deposit flows use `aggregateStrict()`. A future developer may call `aggregate()` and miss the `isStale` flag.
 
-**Issue:** [#TM-016](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-016+Enforce+aggregateStrict+usage+in+deposit+path+via+linting+or+type+system)
+**Issue:** [#TM-016](https://github.com/remitx/remitx/issues/new?title=TM-016+Enforce+aggregateStrict+usage+in+deposit+path+via+linting+or+type+system)
 
 ---
 
@@ -514,7 +514,7 @@ Severity scale:
 
 **Residual Risk:** No last-known-good rate cache with TTL fallback. No alerting on `NoRateAvailableError`. A sustained outage of all providers silently blocks all deposits.
 
-**Issue:** [#TM-017](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-017+Add+last-known-good+rate+cache+and+alert+on+NoRateAvailableError)
+**Issue:** [#TM-017](https://github.com/remitx/remitx/issues/new?title=TM-017+Add+last-known-good+rate+cache+and+alert+on+NoRateAvailableError)
 
 ---
 
@@ -540,21 +540,21 @@ The following table lists all **Critical** and **High** severity threats that re
 
 | Threat ID | Title | Severity | Issue | Status |
 |-----------|-------|----------|-------|--------|
-| TB2-002 | Oracle Attestation Signature Not Implemented | **Critical** | [#TM-008](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-008+CRITICAL+Implement+Ed25519+signature+verification+in+OracleAttestation) | 🔴 Open — Mainnet Blocker |
-| TB2-004 | Single-key Admin — No Multi-sig Enforcement | **Critical** | [#TM-010](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-010+Enforce+multi-sig+admin+threshold+in+contract+and+add+upgrade+timelock) | 🔴 Open |
-| TB2-001 | Relayer Key Compromise | **Critical** | [#TM-007](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-007+Separate+relayer+and+oracle+operator+keys+and+use+HSM+or+KMS) | 🔴 Open |
-| TB1-001 | JWT Forging via Weak HS256 Secret | High | [#TM-001](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-001+Enforce+JWT+secret+minimum+entropy+and+rotation+policy) | 🟡 Open |
-| TB1-003 | Tampered Payment Amount in Deposit | High | [#TM-003](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-003+Bind+escrow+creation+to+server-issued+rate+quote) | 🟡 Open |
-| TB1-006 | Anchor Key Cache Poisoning (stellar.toml) | High | [#TM-006](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-006+Pin+anchor+signing+key+in+config+and+use+toml+as+secondary+check) | 🟡 Open |
-| TB2-003 | Oracle Attestation Replay (No Nonce Store) | High | [#TM-009](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-009+Store+used+attestation+nonces+on-chain+to+prevent+replay) | 🟡 Open |
-| TB3-001 | Webhook Secret Leak → Forged Events | High | [#TM-011](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-011+Document+webhook+secret+rotation+procedure+and+add+monitoring+alert) | 🟡 Open |
-| TB3-002 | Webhook Replay (In-memory Idempotency) | High | [#TM-012](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) | 🟡 Open |
-| TB3-005 | Repudiation — Idempotency Store Not Durable | High | [#TM-012](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) | 🟡 Open |
-| TB4-001 | Horizon MITM / DNS Spoofing | High | [#TM-013](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-013+Add+secondary+Horizon+endpoint+and+document+TLS+pinning+policy) | 🟡 Open |
+| TB2-002 | Oracle Attestation Signature Not Implemented | **Critical** | [#TM-008](https://github.com/remitx/remitx/issues/new?title=TM-008+CRITICAL+Implement+Ed25519+signature+verification+in+OracleAttestation) | 🔴 Open — Mainnet Blocker |
+| TB2-004 | Single-key Admin — No Multi-sig Enforcement | **Critical** | [#TM-010](https://github.com/remitx/remitx/issues/new?title=TM-010+Enforce+multi-sig+admin+threshold+in+contract+and+add+upgrade+timelock) | 🔴 Open |
+| TB2-001 | Relayer Key Compromise | **Critical** | [#TM-007](https://github.com/remitx/remitx/issues/new?title=TM-007+Separate+relayer+and+oracle+operator+keys+and+use+HSM+or+KMS) | 🔴 Open |
+| TB1-001 | JWT Forging via Weak HS256 Secret | High | [#TM-001](https://github.com/remitx/remitx/issues/new?title=TM-001+Enforce+JWT+secret+minimum+entropy+and+rotation+policy) | 🟡 Open |
+| TB1-003 | Tampered Payment Amount in Deposit | High | [#TM-003](https://github.com/remitx/remitx/issues/new?title=TM-003+Bind+escrow+creation+to+server-issued+rate+quote) | 🟡 Open |
+| TB1-006 | Anchor Key Cache Poisoning (stellar.toml) | High | [#TM-006](https://github.com/remitx/remitx/issues/new?title=TM-006+Pin+anchor+signing+key+in+config+and+use+toml+as+secondary+check) | 🟡 Open |
+| TB2-003 | Oracle Attestation Replay (No Nonce Store) | High | [#TM-009](https://github.com/remitx/remitx/issues/new?title=TM-009+Store+used+attestation+nonces+on-chain+to+prevent+replay) | 🟡 Open |
+| TB3-001 | Webhook Secret Leak → Forged Events | High | [#TM-011](https://github.com/remitx/remitx/issues/new?title=TM-011+Document+webhook+secret+rotation+procedure+and+add+monitoring+alert) | 🟡 Open |
+| TB3-002 | Webhook Replay (In-memory Idempotency) | High | [#TM-012](https://github.com/remitx/remitx/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) | 🟡 Open |
+| TB3-005 | Repudiation — Idempotency Store Not Durable | High | [#TM-012](https://github.com/remitx/remitx/issues/new?title=TM-012+Persist+webhook+idempotency+store+to+Postgres+to+survive+restarts) | 🟡 Open |
+| TB4-001 | Horizon MITM / DNS Spoofing | High | [#TM-013](https://github.com/remitx/remitx/issues/new?title=TM-013+Add+secondary+Horizon+endpoint+and+document+TLS+pinning+policy) | 🟡 Open |
 | TB4-002 | Ledger Gap — Missed Events | High | Accepted — gap detection + replay in place; monitor Prometheus alerts | ✅ Accepted |
-| TB5-001 | Rate Provider Manipulation (DEX) | High | [#TM-015](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-015+Add+fourth+rate+provider+and+circuit-breaker+for+extreme+rate+deviation) | 🟡 Open |
-| TB5-002 | Stale Rate Used in Deposit | High | [#TM-016](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-016+Enforce+aggregateStrict+usage+in+deposit+path+via+linting+or+type+system) | 🟡 Open |
-| TB5-004 | All Rate Providers Unavailable | High | [#TM-017](https://github.com/afropay/afropay-stellar-contract/issues/new?title=TM-017+Add+last-known-good+rate+cache+and+alert+on+NoRateAvailableError) | 🟡 Open |
+| TB5-001 | Rate Provider Manipulation (DEX) | High | [#TM-015](https://github.com/remitx/remitx/issues/new?title=TM-015+Add+fourth+rate+provider+and+circuit-breaker+for+extreme+rate+deviation) | 🟡 Open |
+| TB5-002 | Stale Rate Used in Deposit | High | [#TM-016](https://github.com/remitx/remitx/issues/new?title=TM-016+Enforce+aggregateStrict+usage+in+deposit+path+via+linting+or+type+system) | 🟡 Open |
+| TB5-004 | All Rate Providers Unavailable | High | [#TM-017](https://github.com/remitx/remitx/issues/new?title=TM-017+Add+last-known-good+rate+cache+and+alert+on+NoRateAvailableError) | 🟡 Open |
 
 ---
 

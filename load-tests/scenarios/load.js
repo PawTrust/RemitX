@@ -1,9 +1,9 @@
 /**
- * AfroPay k6 Load Profile
+ * RemitX k6 Load Profile
  * =======================
  * Purpose : Characterise steady-state throughput at 100 concurrent VUs over 10 minutes.
  * Profile : 30 s ramp-up → 100 VUs for 8.5 min → 30 s ramp-down.
- * Usage   : k6 run --env BASE_URL=http://staging.afropay.io load-tests/scenarios/load.js
+ * Usage   : k6 run --env BASE_URL=http://staging.remitx.io load-tests/scenarios/load.js
  *
  * Environment variables:
  *   BASE_URL          : API base URL                (default: http://localhost:8000)

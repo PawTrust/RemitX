@@ -23,7 +23,7 @@ The Horizon event listener is more than **100 ledgers behind** the chain tip. At
 
 ### 1. Check current lag value
 ```bash
-curl https://api.afropay.io/metrics | grep horizon_stream_lag_ledgers
+curl https://api.remitx.io/metrics | grep horizon_stream_lag_ledgers
 ```
 
 ### 2. Check Stellar Horizon status
@@ -38,8 +38,8 @@ Also check: https://status.stellar.org
 
 ### 3. Check the Horizon listener service
 ```bash
-kubectl get pods -l app=afropay-horizon-listener
-kubectl logs -l app=afropay-horizon-listener --since=10m
+kubectl get pods -l app=remitx-horizon-listener
+kubectl logs -l app=remitx-horizon-listener --since=10m
 ```
 
 Look for:
@@ -50,13 +50,13 @@ Look for:
 ### 4. Check Horizon rate limiting
 If the listener is making too many API calls, Horizon may be rate-limiting it:
 ```bash
-kubectl logs -l app=afropay-horizon-listener | grep -i "429\|rate.limit\|too.many"
+kubectl logs -l app=remitx-horizon-listener | grep -i "429\|rate.limit\|too.many"
 ```
 
 ### 5. Restart the listener (safe — it resumes from last processed ledger)
 ```bash
-kubectl rollout restart deployment/afropay-horizon-listener
-kubectl rollout status deployment/afropay-horizon-listener
+kubectl rollout restart deployment/remitx-horizon-listener
+kubectl rollout status deployment/remitx-horizon-listener
 ```
 
 The listener stores its last processed ledger sequence in the database and resumes from there on restart — no ledgers are skipped.
@@ -92,9 +92,9 @@ The listener stores its last processed ledger sequence in the database and resum
 If the listener crashed and missed a significant range of ledgers, replay them:
 ```bash
 # Set the HORIZON_LISTENER_START_LEDGER env var to force replay from a specific ledger
-kubectl set env deployment/afropay-horizon-listener \
+kubectl set env deployment/remitx-horizon-listener \
   HORIZON_LISTENER_START_LEDGER=<missed_from_ledger>
-kubectl rollout restart deployment/afropay-horizon-listener
+kubectl rollout restart deployment/remitx-horizon-listener
 ```
 
 ---

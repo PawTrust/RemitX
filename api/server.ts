@@ -4,7 +4,7 @@ import { config } from "./config";
 const app = buildApp();
 
 app.listen(config.port, () => {
-  console.log(`AfroPay anchor API listening on :${config.port}`);
+  console.log(`RemitX anchor API listening on :${config.port}`);
   console.log(`  home domain:            ${config.homeDomain}`);
   console.log(`  network:                ${config.networkPassphrase}`);
   console.log(`  WEB_AUTH_ENDPOINT:      ${config.webAuthEndpoint}`);

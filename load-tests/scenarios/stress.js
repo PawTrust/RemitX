@@ -1,9 +1,9 @@
 /**
- * AfroPay k6 Stress Profile
+ * RemitX k6 Stress Profile
  * =========================
  * Purpose : Find the VU cliff where the first errors appear.
  *           Ramp from 100 → 500 VUs over 20 minutes, then soak at peak for 5 min.
- * Usage   : k6 run --env BASE_URL=http://staging.afropay.io load-tests/scenarios/stress.js
+ * Usage   : k6 run --env BASE_URL=http://staging.remitx.io load-tests/scenarios/stress.js
  *
  * Environment variables:
  *   BASE_URL           : API base URL               (default: http://localhost:8000)

@@ -1,6 +1,6 @@
 "use strict";
 /**
- * AfroPay shared Prometheus metrics registry.
+ * RemitX shared Prometheus metrics registry.
  *
  * All services (API, relayer, oracle, Horizon listener) import their metrics
  * from this module so label names and metric names stay consistent across the

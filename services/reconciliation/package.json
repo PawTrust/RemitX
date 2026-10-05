@@ -1,8 +1,8 @@
 {
-  "name": "afropay-reconciliation",
+  "name": "remitx-reconciliation",
   "version": "0.1.0",
   "private": true,
-  "description": "Chain-vs-DB reconciliation service for AfroPay escrow state integrity",
+  "description": "Chain-vs-DB reconciliation service for RemitX escrow state integrity",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

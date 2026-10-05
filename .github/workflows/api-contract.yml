@@ -44,13 +44,13 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: afropay
-          POSTGRES_PASSWORD: afropay
-          POSTGRES_DB: afropay_test
+          POSTGRES_USER: remitx
+          POSTGRES_PASSWORD: remitx
+          POSTGRES_DB: remitx_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U afropay"
+          --health-cmd "pg_isready -U remitx"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -64,7 +64,7 @@ jobs:
       # Deterministic test keypair — NEVER use in production
       SEP10_SIGNING_SEED: "SCZANGBA5RLAZ7QSQE7RHKH4APCLKZO4TCT4CDTJHOM7LX7H4UQGPNM"
       JWT_SECRET: "test-jwt-secret-32-bytes-min-len"
-      DATABASE_URL: "postgresql://afropay:afropay@localhost:5432/afropay_test"
+      DATABASE_URL: "postgresql://remitx:remitx@localhost:5432/remitx_test"
       # Dummy 32-byte master key (base64)
       MASTER_ENCRYPTION_KEY: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
       # Paystack / Flutterwave secrets for webhook signature tests
@@ -94,7 +94,7 @@ jobs:
           npm install -g db-migrate db-migrate-pg
           psql "$DATABASE_URL" -f api/migrations/001_webhook_idempotency.sql || true
         env:
-          DATABASE_URL: postgresql://afropay:afropay@localhost:5432/afropay_test
+          DATABASE_URL: postgresql://remitx:remitx@localhost:5432/remitx_test
 
       - name: Start API server
         run: |

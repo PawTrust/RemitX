@@ -2,13 +2,13 @@
 
 **Date:** 2024-02-20  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay's most important corridor is USD/USDC → NGN (Nigerian Naira), which accounts for the largest remittance corridor in Sub-Saharan Africa. To disburse NGN to recipients, AfroPay needs a Nigerian fiat off-ramp provider that can receive a programmatic trigger from the oracle layer and push funds to the recipient's bank account or mobile wallet.
+RemitX's most important corridor is USD/USDC → NGN (Nigerian Naira), which accounts for the largest remittance corridor in Sub-Saharan Africa. To disburse NGN to recipients, RemitX needs a Nigerian fiat off-ramp provider that can receive a programmatic trigger from the oracle layer and push funds to the recipient's bank account or mobile wallet.
 
 Three candidates were evaluated: Flutterwave, Paystack, and Mono. The choice affects recipient coverage, API reliability, regulatory standing, and long-term partnership feasibility.
 
@@ -79,7 +79,7 @@ Three candidates were evaluated: Flutterwave, Paystack, and Mono. The choice aff
 - Webhook delivery confirmation requires custom mapping to oracle attestation format
 - Stripe acquisition has created uncertainty about Paystack's independent product roadmap
 
-**Reason rejected:** Limited to NGN and lacks the multi-corridor API needed for AfroPay's expansion roadmap.
+**Reason rejected:** Limited to NGN and lacks the multi-corridor API needed for RemitX's expansion roadmap.
 
 ---
 
@@ -92,7 +92,7 @@ Three candidates were evaluated: Flutterwave, Paystack, and Mono. The choice aff
 **Cons:**
 - Does not offer a disbursement API — cannot push funds to recipient accounts
 - Primarily a data/verification platform, not a payments platform
-- Cannot serve as the off-ramp agent in AfroPay's escrow model
+- Cannot serve as the off-ramp agent in RemitX's escrow model
 
 **Reason rejected:** Mono does not offer fund disbursement. It remains a candidate for recipient account verification (KYC layer), but is out of scope for the off-ramp decision.
 
@@ -104,12 +104,12 @@ Three candidates were evaluated: Flutterwave, Paystack, and Mono. The choice aff
 
 - Flutterwave's `Transfer` webhook gives the oracle layer a reliable delivery confirmation event.
 - Multi-corridor support (NG, GH, KE) means future corridor expansion reuses the same integration.
-- CBN licensing reduces AfroPay's regulatory exposure in Nigeria.
+- CBN licensing reduces RemitX's regulatory exposure in Nigeria.
 
 ### Negative
 
-- AfroPay is dependent on Flutterwave's uptime and API stability.
-- The 2021 data breach history requires AfroPay to treat Flutterwave API credentials as high-value secrets with rotation policies.
+- RemitX is dependent on Flutterwave's uptime and API stability.
+- The 2021 data breach history requires RemitX to treat Flutterwave API credentials as high-value secrets with rotation policies.
 - If Flutterwave changes pricing or API terms, switching costs are non-trivial.
 
 ### Neutral

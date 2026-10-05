@@ -1,9 +1,9 @@
 # ============================================================================
-# HashiCorp Vault Server Configuration — AfroPay
+# HashiCorp Vault Server Configuration — RemitX
 # ============================================================================
 # Production: replace "file" storage with "raft" (HA) or "consul".
 # This config targets a single-node dev/staging Vault instance running
-# in Docker alongside the AfroPay services.
+# in Docker alongside the RemitX services.
 
 ui = true
 

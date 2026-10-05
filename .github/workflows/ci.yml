@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# AfroPay — Continuous Integration
+# RemitX — Continuous Integration
 # Runs on every PR targeting main/develop and on every push to those branches.
 # All three jobs run in parallel; merge is blocked if any job fails.
 # ─────────────────────────────────────────────────────────────────────────────

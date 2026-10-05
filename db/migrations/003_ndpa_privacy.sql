@@ -24,7 +24,7 @@
 -- privacy_notices
 -- ---------------------------------------------------------------------------
 -- Stores the full text (or a canonical URL) of each published version of the
--- AfroPay Privacy Notice.  The highest `version` integer is always current.
+-- RemitX Privacy Notice.  The highest `version` integer is always current.
 --
 -- effective_date  — when this version became legally binding.
 -- notice_text     — full plain-text or HTML of the notice at this version.
@@ -169,5 +169,5 @@ CREATE INDEX IF NOT EXISTS pal_purpose         ON privacy_audit_log (purpose);
 -- Revoke DELETE / UPDATE from the application role so accidental or malicious
 -- log tampering is rejected at the DB layer.
 -- (Uncomment and adapt to your DB role names before running in production.)
--- REVOKE DELETE, UPDATE, TRUNCATE ON privacy_audit_log FROM afropay_app;
--- GRANT INSERT, SELECT ON privacy_audit_log TO afropay_app;
+-- REVOKE DELETE, UPDATE, TRUNCATE ON privacy_audit_log FROM remitx_app;
+-- GRANT INSERT, SELECT ON privacy_audit_log TO remitx_app;

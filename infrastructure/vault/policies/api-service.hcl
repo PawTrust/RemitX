@@ -1,7 +1,7 @@
 # ============================================================================
 # Vault Policy: api-service
 # ============================================================================
-# Grants read-only access to secrets required by the AfroPay API service:
+# Grants read-only access to secrets required by the RemitX API service:
 #   - JWT secret
 #   - Master encryption key (for user wallet storage)
 #   - Redis password

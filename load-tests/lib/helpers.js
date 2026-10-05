@@ -1,5 +1,5 @@
 /**
- * Shared helpers for AfroPay k6 load tests.
+ * Shared helpers for RemitX k6 load tests.
  */
 
 /** All supported payment corridors. */

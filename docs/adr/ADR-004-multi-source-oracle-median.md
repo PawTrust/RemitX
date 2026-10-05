@@ -2,15 +2,15 @@
 
 **Date:** 2024-02-05  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay's escrow contract releases USDC to an off-ramp agent only after an oracle confirms successful local currency delivery. The oracle is also the source of exchange rate data for corridor pricing. Both functions — delivery attestation and rate feeds — must resist single-point-of-failure and manipulation.
+RemitX's escrow contract releases USDC to an off-ramp agent only after an oracle confirms successful local currency delivery. The oracle is also the source of exchange rate data for corridor pricing. Both functions — delivery attestation and rate feeds — must resist single-point-of-failure and manipulation.
 
-The fundamental question is: should AfroPay trust a single oracle operator, or require consensus across multiple independent oracle operators?
+The fundamental question is: should RemitX trust a single oracle operator, or require consensus across multiple independent oracle operators?
 
 ---
 
@@ -36,7 +36,7 @@ The fundamental question is: should AfroPay trust a single oracle operator, or r
 
 **Chosen option:** Multi-source oracle with median aggregation
 
-**Rationale:** A single oracle per corridor creates unacceptable collusion and availability risk. The optimistic oracle model introduces a challenge window that conflicts with AfroPay's <10 second settlement target. Median aggregation across N oracles is robust: an attacker must compromise more than half the oracle set to manipulate a delivery attestation or exchange rate.
+**Rationale:** A single oracle per corridor creates unacceptable collusion and availability risk. The optimistic oracle model introduces a challenge window that conflicts with RemitX's <10 second settlement target. Median aggregation across N oracles is robust: an attacker must compromise more than half the oracle set to manipulate a delivery attestation or exchange rate.
 
 ---
 
@@ -84,7 +84,7 @@ The fundamental question is: should AfroPay trust a single oracle operator, or r
 - Battle-tested in Ethereum DeFi
 
 **Cons:**
-- Challenge window (typically 2 hours) is incompatible with AfroPay's sub-minute settlement target
+- Challenge window (typically 2 hours) is incompatible with RemitX's sub-minute settlement target
 - Requires a dispute token and token-weighted governance — significant additional complexity
 - No existing Soroban implementation; would require significant development effort
 - Optimistic model puts the burden of challenging on watchers — not suitable for a remittance product where users expect guarantees at deposit time
@@ -117,6 +117,6 @@ The fundamental question is: should AfroPay trust a single oracle operator, or r
 
 - [Chainlink — Decentralised Data Feeds](https://docs.chain.link/data-feeds) — Reference for median aggregation design
 - [UMA Protocol — Optimistic Oracle](https://docs.umaproject.org/protocol-overview/how-does-umas-oracle-work) — Evaluated and rejected
-- [AfroPay oracle protocol spec](../oracle-integration.md)
+- [RemitX oracle protocol spec](../oracle-integration.md)
 - Implementation: [`src/oracle.rs`](../../src/oracle.rs)
 - Related issue: #39

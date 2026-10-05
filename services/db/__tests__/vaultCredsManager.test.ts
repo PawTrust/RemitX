@@ -204,7 +204,7 @@ function makeManager(
     dbRole: "api-role",
     pgHost: "localhost",
     pgPort: 5432,
-    pgDatabase: "afropay",
+    pgDatabase: "remitx",
     checkIntervalMs: 60_000, // don't run timer automatically in tests
     ...overrides,
   });

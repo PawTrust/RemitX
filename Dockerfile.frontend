@@ -1,5 +1,5 @@
 # ============================================================
-# Dockerfile.frontend — AfroPay Next.js Dashboard
+# Dockerfile.frontend — RemitX Next.js Dashboard
 # ============================================================
 # NOTE: The Next.js frontend is planned (see docs/adr/ADR-008-nextjs-app-router.md)
 # but the source code has not yet been scaffolded. This Dockerfile is

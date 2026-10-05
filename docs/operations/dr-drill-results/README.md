@@ -1,6 +1,6 @@
 # DR Drill Results
 
-This directory contains the output of every AfroPay disaster recovery drill,
+This directory contains the output of every RemitX disaster recovery drill,
 both automated (GitHub Actions monthly) and manual.
 
 Each result file is named `YYYY-MM-DD_HHMMSS_result.json` and is generated
@@ -14,7 +14,7 @@ automatically by `scripts/dr/restore-postgres.sh`.
   "completed_at":        "ISO-8601 UTC timestamp when the drill finished",
   "elapsed_seconds":     "Total wall-clock seconds for restore + integrity checks",
   "target_time":         "The PITR target time used for this drill",
-  "stanza":              "pgBackRest stanza name (afropay)",
+  "stanza":              "pgBackRest stanza name (remitx)",
   "pgdata":              "PostgreSQL data directory path",
   "status":              "PASS | FAIL | INTEGRITY_FAILED | RTO_EXCEEDED | PRECONDITION_FAILED",
   "rto_target_seconds":  14400,
@@ -32,7 +32,7 @@ automatically by `scripts/dr/restore-postgres.sh`.
 |---|-------|----------------|
 | 1 | Database connectivity | psql can connect, databases are listed |
 | 2 | Recovery target time | DB `NOW()` is at or after the target time |
-| 3 | Required tables exist | All 5 AfroPay tables present with row counts |
+| 3 | Required tables exist | All 5 RemitX tables present with row counts |
 | 4 | escrow_events immutability | No rows with negative IDs |
 | 5 | Long-running transactions | No transactions running > 5 min |
 | 6 | Replication slots | No active replication slots on restored instance |

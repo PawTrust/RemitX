@@ -1,8 +1,8 @@
-# AfroPay Soroban Smart Contract — Technical Design
+# RemitX Soroban Smart Contract — Technical Design
 
 ## 1. Overview
 
-The AfroPay Escrow Contract is a Soroban smart contract that implements trustless fund management for cross-border remittances. It enables:
+The RemitX Escrow Contract is a Soroban smart contract that implements trustless fund management for cross-border remittances. It enables:
 
 - **Atomic escrow:** Sender locks USDC → Oracle confirms delivery → Funds release to agent
 - **Timeout protection:** Automatic refund if oracle doesn't confirm within timeout window
@@ -77,7 +77,7 @@ pub struct OracleAttestation {
 ```
 
 **Signature verification:**
-- Message format: `AFROPAY_ATTESTATION|escrow_id|success|proof|timestamp|nonce`
+- Message format: `REMITX_ATTESTATION|escrow_id|success|proof|timestamp|nonce`
 - Algorithm: Ed25519 (Stellar native)
 - Verification: Soroban's `soroban_sdk::crypto::Ed25519::verify()`
 - Replay protection: Nonce stored on-chain, incremented per oracle

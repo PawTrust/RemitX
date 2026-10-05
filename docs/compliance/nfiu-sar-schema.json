@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://afropay.io/schemas/nfiu-sar-schema.json",
+  "$id": "https://remitx.io/schemas/nfiu-sar-schema.json",
   "title": "NFIU Suspicious Activity Report",
   "description": "JSON schema for Suspicious Activity Reports filed with the Nigerian Financial Intelligence Unit (NFIU) under the CBN AML/CFT Regulations 2022.",
   "type": "object",

@@ -2,13 +2,13 @@
 
 **Date:** 2024-01-22  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-The AfroPay escrow contract requires a timelock mechanism: after a configurable window (e.g., 2 hours), the sender can claim a refund if the oracle has not confirmed delivery. The timelock must be resistant to manipulation and must behave deterministically across all validators in the Stellar network.
+The RemitX escrow contract requires a timelock mechanism: after a configurable window (e.g., 2 hours), the sender can claim a refund if the oracle has not confirmed delivery. The timelock must be resistant to manipulation and must behave deterministically across all validators in the Stellar network.
 
 Two mechanisms are available in Soroban: ledger sequence numbers (`env.ledger().sequence()`) and ledger timestamps (`env.ledger().timestamp()`). This decision has security implications — a manipulable timelock could allow either premature refunds (denying an agent in-flight payment) or permanent fund lock-up.
 

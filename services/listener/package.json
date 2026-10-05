@@ -1,5 +1,5 @@
 {
-  "name": "afropay-horizon-listener",
+  "name": "remitx-horizon-listener",
   "version": "0.1.0",
   "private": true,
   "description": "Stellar Horizon SSE listener with gap detection, catch-up replay, and idempotent event processing",

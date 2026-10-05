@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This document presents a systematic audit of cross-contract invocations (`env.invoke_contract()` and `env.invoke_contract_check()` calls) in the AfroPay Soroban contracts to identify and mitigate **logical reentrancy** risks.
+This document presents a systematic audit of cross-contract invocations (`env.invoke_contract()` and `env.invoke_contract_check()` calls) in the RemitX Soroban contracts to identify and mitigate **logical reentrancy** risks.
 
 **Status:** ✅ **AUDIT COMPLETE — NO ACTIVE REENTRANCY RISKS IDENTIFIED**
 
@@ -25,7 +25,7 @@ This document presents a systematic audit of cross-contract invocations (`env.in
 4. Contract A operates on stale state (the state read in step 1 has changed)
 5. Contract A writes stale state back, corrupting data
 
-### 1.2 Example Scenario (AfroPay Context)
+### 1.2 Example Scenario (RemitX Context)
 
 ```
 Escrow Contract → invoke_contract(Token) [transfer funds]
@@ -674,7 +674,7 @@ Phase 3: Security Audit (Sprint N+3)
 - **Soroban Security:** https://docs.stellar.org/soroban/security
 - **Checks-Effects-Interactions:** https://fravoll.github.io/solidity-patterns/checks_effects_interactions.html
 - **Reentrancy Guards:** OpenZeppelin ReentrancyGuard (Solidity, adapted for Soroban)
-- **AfroPay Architecture:** `docs/contract-design.md`, `docs/oracle-integration.md`
+- **RemitX Architecture:** `docs/contract-design.md`, `docs/oracle-integration.md`
 
 ---
 

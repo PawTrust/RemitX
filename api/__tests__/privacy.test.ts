@@ -224,7 +224,7 @@ describe("InMemoryPrivacyAuditLogger", () => {
   });
 
   const ENTRY: AuditEntry = {
-    actorId: "admin@afropay.io",
+    actorId: "admin@remitx.io",
     actorType: "admin",
     subjectAccount: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
     fieldsAccessed: ["first_name", "last_name", "bvn"],
@@ -242,7 +242,7 @@ describe("InMemoryPrivacyAuditLogger", () => {
   it("captures actor_id, actor_type, subject, fields, purpose, legalBasis", async () => {
     await logger.record(ENTRY);
     const recorded = logger.entries[0];
-    expect(recorded.actorId).toBe("admin@afropay.io");
+    expect(recorded.actorId).toBe("admin@remitx.io");
     expect(recorded.actorType).toBe("admin");
     expect(recorded.subjectAccount).toBe(ENTRY.subjectAccount);
     expect(recorded.fieldsAccessed).toEqual(["first_name", "last_name", "bvn"]);
@@ -473,7 +473,7 @@ describe("POST /api/v1/privacy/dsar", () => {
       effectiveDate: "2026-01-01",
       noticeText: "Privacy notice v1",
       summaryOfChanges: "Initial notice",
-      createdBy: "ops@afropay.io",
+      createdBy: "ops@remitx.io",
     });
     await testNoticeStore.recordConsent({ account: TEST_ACCOUNT, noticeVersion: 1 });
 

@@ -1,8 +1,8 @@
 {
-  "name": "afropay-web",
+  "name": "remitx-web",
   "version": "0.1.0",
   "private": true,
-  "description": "AfroPay frontend — real-time escrow status timeline (Issue #24)",
+  "description": "RemitX frontend — real-time escrow status timeline (Issue #24)",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -9,10 +9,10 @@
 
 ## Overview
 
-The AfroPay relayer service holds a **Stellar Ed25519 signing key** (hot wallet) used to:
+The RemitX relayer service holds a **Stellar Ed25519 signing key** (hot wallet) used to:
 
 1. Sign SEP-10 challenge transactions (authenticating users against the anchor)
-2. Submit Soroban escrow transactions on behalf of AfroPay
+2. Submit Soroban escrow transactions on behalf of RemitX
 3. Act as the treasury co-signer for multi-sig operations
 
 A compromised key can drain the relayer hot wallet and sign fraudulent escrow releases. This runbook describes how to rotate the key with **zero service interruption**, update Vault, and deprecate the old key safely.
@@ -49,7 +49,7 @@ Rotate the Stellar signing key **immediately** if any of the following occur:
 
 ```bash
 # Set environment variables for this session
-export VAULT_ADDR="https://vault.afropay.internal:8200"
+export VAULT_ADDR="https://vault.remitx.internal:8200"
 export VAULT_TOKEN="<your-operator-token>"      # Must have write on secret/relayer/*
 export STELLAR_NETWORK="testnet"                 # or "mainnet"
 export HORIZON_URL="https://horizon-testnet.stellar.org"  # adjust for mainnet
@@ -146,12 +146,12 @@ vault kv put secret/relayer/signing-key \
 
 # 4b. Restart the staging relayer service to pick up the new credentials
 #     (exact command depends on your deployment — kubectl, docker compose, systemd)
-kubectl rollout restart deployment/relayer -n afropay-staging   # Kubernetes
+kubectl rollout restart deployment/relayer -n remitx-staging   # Kubernetes
 # OR
 docker compose restart relayer                                   # Docker Compose
 
 # 4c. Wait for the relayer to come healthy
-kubectl rollout status deployment/relayer -n afropay-staging
+kubectl rollout status deployment/relayer -n remitx-staging
 ```
 
 ```bash
@@ -160,7 +160,7 @@ kubectl rollout status deployment/relayer -n afropay-staging
 sed -i "s/${CURRENT_PUBLIC_KEY}/${NEW_PUBLIC_KEY}/" public/.well-known/stellar.toml
 
 # 4e. Validate SEP-10 challenge signing with the new key
-curl -sf "https://staging.afropay.io/auth?account=G..." | jq .transaction | \
+curl -sf "https://staging.remitx.io/auth?account=G..." | jq .transaction | \
   node -e "
     const { Transaction, Networks } = require('@stellar/stellar-sdk');
     const tx = new Transaction(require('fs').readFileSync('/dev/stdin','utf8').trim(), Networks.TESTNET);
@@ -182,8 +182,8 @@ vault kv put secret/relayer/signing-key \
   previous_public_key="${CURRENT_PUBLIC_KEY}"
 
 # 5b. Perform a rolling restart of the production relayer
-kubectl rollout restart deployment/relayer -n afropay-production
-kubectl rollout status deployment/relayer -n afropay-production --timeout=5m
+kubectl rollout restart deployment/relayer -n remitx-production
+kubectl rollout status deployment/relayer -n remitx-production --timeout=5m
 
 # 5c. Update stellar.toml SIGNING_KEY in production
 #     Redeploy public/.well-known/stellar.toml through your CDN/hosting pipeline
@@ -191,7 +191,7 @@ git commit -am "chore: rotate Stellar signing key to version ${NEW_KEY_VERSION}"
 git push origin main   # triggers CDN deploy
 
 # 5d. Monitor for 5 minutes — check SEP-10 auth success rate
-kubectl logs -n afropay-production deployment/relayer --tail=100 -f | \
+kubectl logs -n remitx-production deployment/relayer --tail=100 -f | \
   grep -E '(SEP-10|challenge|signed|error)'
 ```
 
@@ -233,8 +233,8 @@ vault kv put secret/relayer/signing-key \
   previous_public_key=""
 
 # R2. Restart the relayer to reload the old credentials
-kubectl rollout restart deployment/relayer -n afropay-production
-kubectl rollout status deployment/relayer -n afropay-production --timeout=5m
+kubectl rollout restart deployment/relayer -n remitx-production
+kubectl rollout status deployment/relayer -n remitx-production --timeout=5m
 
 # R3. Revert stellar.toml to the old public key
 git revert HEAD

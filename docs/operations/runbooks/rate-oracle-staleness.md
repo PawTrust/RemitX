@@ -29,8 +29,8 @@ Check the Grafana "FX Rate Oracle Staleness" panel or query Prometheus directly.
 
 ### 2. Check oracle service health
 ```bash
-kubectl get pods -l app=afropay-oracle
-kubectl logs -l app=afropay-oracle --since=5m
+kubectl get pods -l app=remitx-oracle
+kubectl logs -l app=remitx-oracle --since=5m
 ```
 
 ### 3. Check upstream rate feed sources
@@ -42,13 +42,13 @@ curl https://api.coinbase.com/v2/exchange-rates?currency=USD
 
 ### 4. Verify oracle is publishing to the API
 ```bash
-curl https://api.afropay.io/api/v1/rates
+curl https://api.remitx.io/api/v1/rates
 # Look at the `updated_at` timestamps per corridor
 ```
 
 ### 5. Force a manual rate refresh (if oracle is running but stale)
 ```bash
-curl -X POST https://oracle.afropay.io/v1/refresh-rates \
+curl -X POST https://oracle.remitx.io/v1/refresh-rates \
   -H "Authorization: Bearer $ORACLE_ADMIN_KEY"
 ```
 
@@ -84,7 +84,7 @@ If rates are dangerously stale and you cannot restore the oracle quickly:
 ```bash
 # Update the API configuration to disable the corridor temporarily
 # (Edit the CORRIDOR_ENABLED environment variable and redeploy, or use the admin API)
-curl -X PATCH https://api.afropay.io/admin/corridors/USD_NGN \
+curl -X PATCH https://api.remitx.io/admin/corridors/USD_NGN \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -d '{"enabled": false}'
 ```

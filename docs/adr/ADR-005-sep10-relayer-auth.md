@@ -2,13 +2,13 @@
 
 **Date:** 2024-02-12  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-The AfroPay API layer (NestJS) acts as a relayer between user wallets, oracle operators, and the Soroban contract. The relayer must authenticate callers before invoking contract operations on their behalf. Specifically:
+The RemitX API layer (NestJS) acts as a relayer between user wallets, oracle operators, and the Soroban contract. The relayer must authenticate callers before invoking contract operations on their behalf. Specifically:
 
 1. **Sender authentication** — Verify the sender before invoking `deposit_escrow()`.
 2. **Oracle authentication** — Verify the oracle before accepting a delivery attestation.
@@ -40,7 +40,7 @@ Two authentication mechanisms were evaluated: Stellar's SEP-10 (Web Authenticati
 
 **Chosen option:** SEP-10 for API-level relayer authentication
 
-**Rationale:** SEP-10 is the Stellar ecosystem standard for authenticating Stellar key pairs to off-chain services. It is implemented by all major Stellar wallets, audited by the Stellar Development Foundation, and already used by Anchors in the same corridors AfroPay targets (M-Pesa, Chipper Cash). Using SEP-10 means AfroPay can onboard users and oracle operators without custom wallet integrations.
+**Rationale:** SEP-10 is the Stellar ecosystem standard for authenticating Stellar key pairs to off-chain services. It is implemented by all major Stellar wallets, audited by the Stellar Development Foundation, and already used by Anchors in the same corridors RemitX targets (M-Pesa, Chipper Cash). Using SEP-10 means RemitX can onboard users and oracle operators without custom wallet integrations.
 
 Note: On-chain authorisation for contract calls still uses Soroban's native `require_auth()`. SEP-10 operates at the API layer only.
 
@@ -54,7 +54,7 @@ Note: On-chain authorisation for contract calls still uses Soroban's native `req
 - Supported natively by Freighter, Lobstr, and hardware wallets — zero custom wallet integration
 - Challenge/response design provides nonce-based replay protection out of the box
 - Audited and maintained by SDF
-- Already used by off-ramp Anchors in AfroPay's target corridors — reuses existing operator tooling
+- Already used by off-ramp Anchors in RemitX's target corridors — reuses existing operator tooling
 - JWT issued after SEP-10 challenge is compatible with standard API gateway middleware
 
 **Cons:**
@@ -74,7 +74,7 @@ Note: On-chain authorisation for contract calls still uses Soroban's native `req
 
 **Cons:**
 - Custom cryptographic code is a high-risk audit target
-- No existing wallet support — requires custom signing UI in AfroPay's frontend
+- No existing wallet support — requires custom signing UI in RemitX's frontend
 - Replay protection must be implemented from scratch (nonce store, token revocation)
 - Does not reuse oracle operators' existing Stellar key infrastructure
 
@@ -101,10 +101,10 @@ Note: On-chain authorisation for contract calls still uses Soroban's native `req
 
 ### Positive
 
-- Wallets that support SEP-10 (Freighter, Lobstr, hardware wallets) work with AfroPay without modification.
+- Wallets that support SEP-10 (Freighter, Lobstr, hardware wallets) work with RemitX without modification.
 - Oracle operators reuse their existing Stellar key pairs for both on-chain attestation and API authentication.
 - SEP-10's challenge nonces provide out-of-the-box replay protection.
-- AfroPay aligns with the Anchor ecosystem, simplifying future SEP-24 integration.
+- RemitX aligns with the Anchor ecosystem, simplifying future SEP-24 integration.
 
 ### Negative
 

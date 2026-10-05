@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# AfroPay — Staging Deployment
+# RemitX — Staging Deployment
 #
 # Triggers  : push to main (after CI passes), or manual dispatch
 # Flow      : build & push Docker images → deploy to staging → k6 smoke test
@@ -7,10 +7,10 @@
 #
 # Required secrets (set in repo Settings → Secrets → Actions):
 #   KUBECONFIG_STAGING   — base64-encoded kubeconfig for the staging cluster
-#   KUBE_NAMESPACE       — Kubernetes namespace (e.g. afropay-staging)
+#   KUBE_NAMESPACE       — Kubernetes namespace (e.g. remitx-staging)
 #
 # Required variables (Settings → Variables → Actions):
-#   STAGING_API_URL      — base URL of the staging API (e.g. https://api.staging.afropay.io)
+#   STAGING_API_URL      — base URL of the staging API (e.g. https://api.staging.remitx.io)
 # ─────────────────────────────────────────────────────────────────────────────
 name: Deploy — Staging
 
@@ -30,9 +30,9 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_API: ghcr.io/${{ github.repository_owner }}/afropay-api
-  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/afropay-frontend
-  KUBE_NAMESPACE: ${{ vars.KUBE_NAMESPACE || 'afropay-staging' }}
+  IMAGE_API: ghcr.io/${{ github.repository_owner }}/remitx-api
+  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/remitx-frontend
+  KUBE_NAMESPACE: ${{ vars.KUBE_NAMESPACE || 'remitx-staging' }}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Job 1 — Build and push Docker images to GHCR
@@ -125,11 +125,11 @@ jobs:
       - name: Snapshot current rollout revision (for rollback)
         id: snapshot
         run: |
-          API_REV=$(kubectl rollout history deployment/afropay-api \
+          API_REV=$(kubectl rollout history deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}" \
             --output=jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}' \
             2>/dev/null || echo "0")
-          FRONTEND_REV=$(kubectl rollout history deployment/afropay-frontend \
+          FRONTEND_REV=$(kubectl rollout history deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}" \
             --output=jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}' \
             2>/dev/null || echo "0")
@@ -142,20 +142,20 @@ jobs:
           IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
           echo "Deploying image tag: ${IMAGE_TAG}"
 
-          kubectl set image deployment/afropay-api \
+          kubectl set image deployment/remitx-api \
             api="${{ env.IMAGE_API }}:${IMAGE_TAG}" \
             -n "${{ env.KUBE_NAMESPACE }}"
 
-          kubectl set image deployment/afropay-frontend \
+          kubectl set image deployment/remitx-frontend \
             frontend="${{ env.IMAGE_FRONTEND }}:${IMAGE_TAG}" \
             -n "${{ env.KUBE_NAMESPACE }}"
 
       - name: Wait for rollout to complete (5 min timeout)
         run: |
-          kubectl rollout status deployment/afropay-api \
+          kubectl rollout status deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=300s
 
-          kubectl rollout status deployment/afropay-frontend \
+          kubectl rollout status deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=300s
 
       - name: Health check — wait for API /health to respond
@@ -180,13 +180,13 @@ jobs:
         if: failure() && steps.health.outcome == 'failure'
         run: |
           echo "⚠️  Health check failed — rolling back deployments"
-          kubectl rollout undo deployment/afropay-api \
+          kubectl rollout undo deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}"
-          kubectl rollout undo deployment/afropay-frontend \
+          kubectl rollout undo deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}"
-          kubectl rollout status deployment/afropay-api \
+          kubectl rollout status deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=120s
-          kubectl rollout status deployment/afropay-frontend \
+          kubectl rollout status deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=120s
           echo "Rollback complete"
           exit 1
@@ -247,13 +247,13 @@ jobs:
         if: failure() && steps.k6_smoke.outcome == 'failure'
         run: |
           echo "⚠️  Smoke test failed — rolling back staging deployments"
-          kubectl rollout undo deployment/afropay-api \
+          kubectl rollout undo deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}"
-          kubectl rollout undo deployment/afropay-frontend \
+          kubectl rollout undo deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}"
-          kubectl rollout status deployment/afropay-api \
+          kubectl rollout status deployment/remitx-api \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=120s
-          kubectl rollout status deployment/afropay-frontend \
+          kubectl rollout status deployment/remitx-frontend \
             -n "${{ env.KUBE_NAMESPACE }}" --timeout=120s
           echo "✅ Rollback complete"
           exit 1

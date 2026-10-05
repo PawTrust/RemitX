@@ -2,13 +2,13 @@
 
 **Date:** 2024-03-01  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay handles real money transfers. Every state transition — escrow creation, fund release, refund, oracle submission — must be permanently and tamper-evidently recorded for:
+RemitX handles real money transfers. Every state transition — escrow creation, fund release, refund, oracle submission — must be permanently and tamper-evidently recorded for:
 
 1. **Regulatory compliance** — Transaction history for AML/KYC reporting
 2. **Dispute resolution** — Proof that a delivery was attested or a refund was triggered

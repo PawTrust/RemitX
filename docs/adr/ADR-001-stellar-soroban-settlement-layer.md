@@ -2,13 +2,13 @@
 
 **Date:** 2024-01-15  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay needs a programmable blockchain settlement layer that can execute trustless escrow logic, hold USDC on behalf of senders, and release or refund funds within a user-acceptable latency window. The platform targets remittance corridors to Africa, where network fees and settlement speed directly affect product viability.
+RemitX needs a programmable blockchain settlement layer that can execute trustless escrow logic, hold USDC on behalf of senders, and release or refund funds within a user-acceptable latency window. The platform targets remittance corridors to Africa, where network fees and settlement speed directly affect product viability.
 
 We evaluated three candidate platforms: Stellar with Soroban smart contracts, Ethereum Layer 2 networks (Arbitrum, Optimism, Base), and Solana. The choice of settlement layer is the single most consequential architectural decision in the stack — it determines token availability, gas economics, developer toolchain, ecosystem fit, and long-term protocol alignment.
 
@@ -56,10 +56,10 @@ We evaluated three candidate platforms: Stellar with Soroban smart contracts, Et
 
 **Cons:**
 - Soroban is newer than Solidity; smaller total developer pool
-- Fewer DeFi money legos to compose with (acceptable for AfroPay's use case)
+- Fewer DeFi money legos to compose with (acceptable for RemitX's use case)
 - Some tooling still maturing (e.g., Soroban debugger)
 
-**Reason chosen:** Best fit for AfroPay's specific remittance use case. The cons are acceptable given the mission.
+**Reason chosen:** Best fit for RemitX's specific remittance use case. The cons are acceptable given the mission.
 
 ---
 
@@ -110,7 +110,7 @@ We evaluated three candidate platforms: Stellar with Soroban smart contracts, Et
 
 ### Negative
 
-- AfroPay is dependent on Stellar network health and SDF governance decisions.
+- RemitX is dependent on Stellar network health and SDF governance decisions.
 - Soroban's smaller developer pool may slow hiring and auditor availability.
 - Migrating to another chain in the future would require significant contract rewrites.
 

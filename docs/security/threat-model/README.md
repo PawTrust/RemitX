@@ -1,4 +1,4 @@
-# AfroPay Threat Model
+# RemitX Threat Model
 
 **Location:** `docs/security/threat-model/`  
 **Status:** Active — v1.0.0 (2026-07-30)  
@@ -18,7 +18,7 @@
 
 ## What Is a Threat Model?
 
-A threat model is a structured analysis of what can go wrong in a system from a security perspective. AfroPay's threat model:
+A threat model is a structured analysis of what can go wrong in a system from a security perspective. RemitX's threat model:
 
 1. Draws a data-flow diagram (DFD) that shows every component, data store, and trust boundary.
 2. Applies the STRIDE framework to enumerate threats at each trust boundary.

@@ -1,6 +1,6 @@
-# AfroPay Developer Handbook — Code Style & Conventions
+# RemitX Developer Handbook — Code Style & Conventions
 
-This document defines the coding standards, linting rules, commit format, and naming conventions for the AfroPay codebase. All contributors are expected to follow these rules. CI enforces them automatically.
+This document defines the coding standards, linting rules, commit format, and naming conventions for the RemitX codebase. All contributors are expected to follow these rules. CI enforces them automatically.
 
 ---
 
@@ -19,7 +19,7 @@ This document defines the coding standards, linting rules, commit format, and na
 
 ## Rust Formatting
 
-AfroPay uses the default `rustfmt` configuration. No custom `rustfmt.toml` is committed.
+RemitX uses the default `rustfmt` configuration. No custom `rustfmt.toml` is committed.
 
 **Run before every commit:**
 
@@ -140,7 +140,7 @@ let timeout_ledger = ledger_height + timeout_ledgers;
 
 ## Storage Key Naming Conventions
 
-Soroban persistent storage keys are `Symbol` values. AfroPay uses the following conventions:
+Soroban persistent storage keys are `Symbol` values. RemitX uses the following conventions:
 
 ### Rules
 
@@ -236,7 +236,7 @@ Each source file begins with a module-level doc comment (`//!`) that describes i
 
 ## Commit Message Format
 
-AfroPay uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+RemitX uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ```
 <type>(<scope>): <short summary in imperative mood, ≤72 chars>

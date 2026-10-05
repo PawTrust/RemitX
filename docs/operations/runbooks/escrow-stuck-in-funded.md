@@ -30,13 +30,13 @@ The Soroban contract timeout is typically 2 hours. At 30 minutes we have time to
 ```bash
 # Query the API store for escrows in Funded state older than 30 min
 curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://api.afropay.io/api/v1/escrow?state=Funded
+  https://api.remitx.io/api/v1/escrow?state=Funded
 ```
 
 ### 2. Check oracle delivery submissions
 The most common cause is the oracle failing to submit an attestation. Check oracle logs:
 ```bash
-kubectl logs -l app=afropay-oracle --since=60m | grep -E "error|attestation|submit"
+kubectl logs -l app=remitx-oracle --since=60m | grep -E "error|attestation|submit"
 ```
 
 ### 3. Verify oracle is registered on-chain
@@ -60,7 +60,7 @@ If the off-ramp partner (M-Pesa, Flutterwave, etc.) is experiencing an outage, t
 ### 5. Manual release (with oracle confirmation)
 If the oracle is operational but the automatic submission failed, trigger a manual attestation:
 ```bash
-curl -X POST https://oracle.afropay.io/v1/attest \
+curl -X POST https://oracle.remitx.io/v1/attest \
   -H "Authorization: Bearer $ORACLE_KEY" \
   -d '{"escrow_id": "<id>", "delivery_success": true, "proof_ref": "<ref>"}'
 ```

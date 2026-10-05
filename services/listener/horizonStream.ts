@@ -66,21 +66,21 @@ export interface ListenerConfig {
 
 /** Incremented once per gap detection event that exceeds the alert threshold. */
 const gapAlertCounter = new Counter({
-  name: "afropay_listener_gap_alert_total",
+  name: "remitx_listener_gap_alert_total",
   help: "Number of times the Horizon SSE listener detected a ledger gap exceeding the alert threshold",
   labelNames: ["contract_id"] as const,
 });
 
 /** Incremented for every event successfully inserted (live + replayed). */
 const eventsProcessedCounter = new Counter({
-  name: "afropay_listener_events_processed_total",
+  name: "remitx_listener_events_processed_total",
   help: "Total escrow events processed by the Horizon listener",
   labelNames: ["event_type", "replayed"] as const,
 });
 
 /** Incremented for every replayed event that was a duplicate (already in DB). */
 const replayDuplicateCounter = new Counter({
-  name: "afropay_listener_replay_duplicate_total",
+  name: "remitx_listener_replay_duplicate_total",
   help: "Replayed events that were already present in escrow_events (idempotency guard hit)",
   labelNames: ["contract_id"] as const,
 });

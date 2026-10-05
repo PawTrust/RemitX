@@ -1,5 +1,5 @@
 # =============================================================================
-# AfroPay — Monthly DR Drill Workflow
+# RemitX — Monthly DR Drill Workflow
 # =============================================================================
 #
 # Runs on the first Monday of each month at 02:00 UTC.
@@ -7,7 +7,7 @@
 #
 # What it does:
 #   1. Spins up a PostgreSQL 16 container on the runner
-#   2. Seeds it with representative AfroPay schema + data
+#   2. Seeds it with representative RemitX schema + data
 #   3. Takes a pgBackRest backup to a local S3-compatible store (MinIO)
 #   4. Waits 5 seconds (simulates passage of time / new writes)
 #   5. Runs scripts/dr/restore-postgres.sh to PITR restore to "1 h ago"
@@ -23,7 +23,7 @@
 #   STAGING_DB_PASSWORD            — password for the staging postgres user
 #
 # Optional overrides (defaults shown):
-#   DR_STANZA            — pgBackRest stanza name (default: afropay)
+#   DR_STANZA            — pgBackRest stanza name (default: remitx)
 #   DR_TARGET_OFFSET_MIN — how many minutes back to restore (default: 60)
 # =============================================================================
 
@@ -50,13 +50,13 @@ on:
         default: false
 
 env:
-  STANZA: ${{ vars.DR_STANZA || 'afropay' }}
+  STANZA: ${{ vars.DR_STANZA || 'remitx' }}
   PG_VERSION: "16"
   PG_USER: "postgres"
-  PG_DB: "afropay"
+  PG_DB: "remitx"
   PG_PORT: "5433"         # non-default to avoid conflicts
   MINIO_PORT: "9000"
-  MINIO_BUCKET: "afropay-db-backups"
+  MINIO_BUCKET: "remitx-db-backups"
   TARGET_OFFSET_MIN: ${{ inputs.target_offset_minutes || '60' }}
 
 jobs:
@@ -202,7 +202,7 @@ jobs:
           # Create pgbackrest OS user role in Postgres
           sudo -u postgres psql -c "CREATE ROLE pgbackrest SUPERUSER LOGIN;"
 
-          # Create the AfroPay database and apply all migrations
+          # Create the RemitX database and apply all migrations
           sudo -u postgres psql -c "CREATE DATABASE ${{ env.PG_DB }};"
 
           # Apply DB migrations
@@ -366,7 +366,7 @@ jobs:
             "attachments": [
               {
                 "color": "${COLOR}",
-                "title": "${EMOJI} AfroPay DR Drill — ${DRILL_DATE}",
+                "title": "${EMOJI} RemitX DR Drill — ${DRILL_DATE}",
                 "fields": [
                   {"title": "Status",       "value": "${STATUS}",                        "short": true},
                   {"title": "RTO Met",      "value": "${RTO_MET} (target: 4h)",          "short": true},
@@ -375,7 +375,7 @@ jobs:
                   {"title": "Result File",  "value": "${RESULT_FILE}",                   "short": false},
                   {"title": "Workflow Run", "value": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "short": false}
                 ],
-                "footer": "AfroPay Platform Engineering",
+                "footer": "RemitX Platform Engineering",
                 "ts": $(date +%s)
               }
             ]
@@ -463,12 +463,12 @@ jobs:
             "attachments": [
               {
                 "color": "${COLOR}",
-                "title": "${EMOJI} AfroPay Redis DR Validation — ${DRILL_DATE}",
+                "title": "${EMOJI} RemitX Redis DR Validation — ${DRILL_DATE}",
                 "fields": [
                   {"title": "Status",       "value": "${REDIS_STATUS}",  "short": true},
                   {"title": "Workflow Run", "value": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "short": false}
                 ],
-                "footer": "AfroPay Platform Engineering",
+                "footer": "RemitX Platform Engineering",
                 "ts": $(date +%s)
               }
             ]

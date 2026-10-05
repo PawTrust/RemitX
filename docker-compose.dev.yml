@@ -1,14 +1,14 @@
 # ============================================================
-# docker-compose.dev.yml — AfroPay Local Development Stack
+# docker-compose.dev.yml — RemitX Local Development Stack
 # ============================================================
-# Run the full AfroPay stack with a single command:
+# Run the full RemitX stack with a single command:
 #   bash scripts/dev-setup.sh
 #
 # Services
 # --------
 #   postgres         — Primary database (port 5432)
 #   redis            — Cache / BullMQ job queue (port 6379)
-#   api              — AfroPay Anchor API (port 8000)
+#   api              — RemitX Anchor API (port 8000)
 #   listener         — Horizon SSE listener (internal)
 #   reconciliation   — Chain-vs-DB reconciliation (port 8001)
 #   oracle           — FX rate aggregator (port 8002)
@@ -36,9 +36,9 @@ x-logging: &default-logging
 x-postgres-env: &postgres-env
   PGHOST: postgres
   PGPORT: "5432"
-  PGDATABASE: afropay
-  PGUSER: afropay
-  PGPASSWORD: afropay_dev_password
+  PGDATABASE: remitx
+  PGUSER: remitx
+  PGPASSWORD: remitx_dev_password
 
 x-node-common-env: &node-common-env
   NODE_ENV: development
@@ -60,9 +60,9 @@ services:
     image: postgres:16.3-alpine3.20
     restart: unless-stopped
     environment:
-      POSTGRES_DB: afropay
-      POSTGRES_USER: afropay
-      POSTGRES_PASSWORD: afropay_dev_password
+      POSTGRES_DB: remitx
+      POSTGRES_USER: remitx
+      POSTGRES_PASSWORD: remitx_dev_password
       # Tune for local dev (less WAL overhead)
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     volumes:
@@ -73,7 +73,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U afropay -d afropay"]
+      test: ["CMD-SHELL", "pg_isready -U remitx -d remitx"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -108,7 +108,7 @@ services:
       context: .
       dockerfile: Dockerfile.api
       target: runner
-    image: afropay-api:dev
+    image: remitx-api:dev
     restart: unless-stopped
     depends_on:
       postgres:
@@ -119,7 +119,7 @@ services:
       <<: [*postgres-env, *node-common-env]
       PORT: "8000"
       REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://afropay:afropay_dev_password@postgres:5432/afropay
+      DATABASE_URL: postgresql://remitx:remitx_dev_password@postgres:5432/remitx
       STELLAR_TOML_PATH: /app/public/.well-known/stellar.toml
     ports:
       - "8000:8000"
@@ -141,7 +141,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.listener
-    image: afropay-listener:dev
+    image: remitx-listener:dev
     restart: unless-stopped
     profiles: ["services"]
     depends_on:
@@ -151,7 +151,7 @@ services:
         condition: service_healthy
     environment:
       <<: [*postgres-env, *node-common-env]
-      DATABASE_URL: postgresql://afropay:afropay_dev_password@postgres:5432/afropay
+      DATABASE_URL: postgresql://remitx:remitx_dev_password@postgres:5432/remitx
       CONTRACT_ID: ${CONTRACT_ID:-}
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'node dist/index.js' || exit 1"]
@@ -166,7 +166,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.reconciliation
-    image: afropay-reconciliation:dev
+    image: remitx-reconciliation:dev
     restart: unless-stopped
     profiles: ["services"]
     depends_on:
@@ -174,7 +174,7 @@ services:
         condition: service_healthy
     environment:
       <<: [*postgres-env, *node-common-env]
-      DATABASE_URL: postgresql://afropay:afropay_dev_password@postgres:5432/afropay
+      DATABASE_URL: postgresql://remitx:remitx_dev_password@postgres:5432/remitx
       PORT: "8001"
       ADMIN_JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-replace-in-production-32chars}
     ports:
@@ -192,7 +192,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.oracle
-    image: afropay-oracle:dev
+    image: remitx-oracle:dev
     restart: unless-stopped
     profiles: ["services"]
     depends_on:
@@ -225,7 +225,7 @@ services:
       context: .
       dockerfile: Dockerfile.contracts
       target: cli
-    image: afropay-contracts:dev
+    image: remitx-contracts:dev
     profiles: ["contracts"]
     environment:
       SOROBAN_RPC_URL: ${SOROBAN_RPC_URL:-https://soroban-testnet.stellar.org}
@@ -253,5 +253,5 @@ volumes:
 # ── Networks ──────────────────────────────────────────────────────────────────
 networks:
   default:
-    name: afropay-dev
+    name: remitx-dev
     driver: bridge

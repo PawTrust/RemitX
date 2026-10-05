@@ -1,16 +1,16 @@
-# AfroPay Data Map — NDPA Compliance
+# RemitX Data Map — NDPA Compliance
 
 **Document owner:** Compliance & Privacy Team  
 **Last reviewed:** 2026-07-26  
 **Review cadence:** Quarterly, or within 30 days of any material change to data collection  
 **Legal framework:** Nigeria Data Protection Act 2023 (NDPA), Nigeria Data Protection Regulation 2019 (NDPR), CBN AML/CFT Regulations 2022, CBN Circular BSD/DIR/GEN/LAB/07/014  
-**Data Protection Officer contact:** dpo@afropay.io  
+**Data Protection Officer contact:** dpo@remitx.io  
 
 ---
 
 ## 1. Purpose of this document
 
-This data map is a record of processing activities (ROPA) required under **NDPA s.27**. It describes every category of personal data AfroPay collects, the purpose and legal basis for processing it, where it is stored, who can access it, and how long it is kept.
+This data map is a record of processing activities (ROPA) required under **NDPA s.27**. It describes every category of personal data RemitX collects, the purpose and legal basis for processing it, where it is stored, who can access it, and how long it is kept.
 
 The map also serves as the reference for:
 - DSAR (Data Subject Access Request) responses — `POST /api/v1/privacy/dsar`
@@ -24,10 +24,10 @@ The map also serves as the reference for:
 
 | Field | Value |
 |---|---|
-| Controller name | AfroPay Technologies Ltd |
+| Controller name | RemitX Technologies Ltd |
 | Registration | CAC/IT/12345678 (Nigeria) |
 | Address | 14 Adetokunbo Ademola St, Victoria Island, Lagos |
-| DPO email | dpo@afropay.io |
+| DPO email | dpo@remitx.io |
 | NDPC registration | DP/2024/AFR/00123 |
 
 ---
@@ -91,7 +91,7 @@ Collected when a SEP-31 cross-border payment is initiated or an escrow is create
 
 **Storage location:** `api/store.ts` `transactions` Map (development); PostgreSQL `sep31_transactions` table (production)  
 **Legal basis for retention:** NDPA s.37 — processing necessary for compliance with a legal obligation (CBN BSD/DIR/GEN/LAB/07/014)  
-**Erasure carve-out:** Transaction amounts, timestamps, and identifiers cannot be erased within the 5-year CBN retention window. AfroPay pseudonymizes PII fields (receiver account numbers) but retains the financial record skeleton.
+**Erasure carve-out:** Transaction amounts, timestamps, and identifiers cannot be erased within the 5-year CBN retention window. RemitX pseudonymizes PII fields (receiver account numbers) but retains the financial record skeleton.
 
 ---
 
@@ -210,7 +210,7 @@ Received from Paystack (`POST /webhooks/paystack`) and Flutterwave (`POST /webho
 | Right of access (DSAR) | `POST /api/v1/privacy/dsar` | 72 hours (NDPA s.35) | Synchronous for < 1,000 records; async job otherwise |
 | Right to erasure | `POST /api/v1/privacy/erasure` | 30 days (NDPA s.36) | PII pseudonymized; transaction amounts/timestamps retained per CBN rule |
 | Right to rectification | `PUT /kyc/customer` | Immediate | User can update own KYC fields via SEP-12 |
-| Right to object | dpo@afropay.io | 30 days | Applies to legitimate-interest processing only |
+| Right to object | dpo@remitx.io | 30 days | Applies to legitimate-interest processing only |
 | Right to data portability | `POST /api/v1/privacy/dsar` | 72 hours | JSON export provided |
 | Right to withdraw consent | `POST /api/v1/privacy/consent` with `version: null` | Immediate | Withdrawing consent stops future marketing; does not affect lawful processing |
 
@@ -218,7 +218,7 @@ Received from Paystack (`POST /webhooks/paystack`) and Flutterwave (`POST /webho
 
 ## 7. Pseudonymization approach
 
-When a right-to-erasure request is processed, AfroPay applies **keyed HMAC-SHA256 pseudonymization** (not encryption):
+When a right-to-erasure request is processed, RemitX applies **keyed HMAC-SHA256 pseudonymization** (not encryption):
 
 ```
 pseudonym = "erased:" + HMAC-SHA256(original_value, PSEUDONYM_KEY)
@@ -264,7 +264,7 @@ Unit tests: `api/__tests__/privacy.test.ts`
 
 ## 10. Privacy Notice versioning
 
-AfroPay maintains a versioned privacy notice in PostgreSQL (`privacy_notices` table). Every time the notice changes materially, a new version is published and users are prompted to re-consent via `GET /api/v1/privacy/consent`.
+RemitX maintains a versioned privacy notice in PostgreSQL (`privacy_notices` table). Every time the notice changes materially, a new version is published and users are prompted to re-consent via `GET /api/v1/privacy/consent`.
 
 | Notice version | Effective date | Summary of changes |
 |---|---|---|
@@ -274,4 +274,4 @@ Current version endpoint: `GET /api/v1/privacy/consent` returns `current_notice_
 
 ---
 
-*This document was generated from the AfroPay codebase and compliance records. It must be reviewed by the DPO before any new data collection is introduced into the system.*
+*This document was generated from the RemitX codebase and compliance records. It must be reviewed by the DPO before any new data collection is introduced into the system.*

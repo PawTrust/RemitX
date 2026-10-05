@@ -1,11 +1,11 @@
-# AfroPay Secrets Inventory
+# RemitX Secrets Inventory
 
 **Document:** `docs/operations/secrets.md`  
 **Owner:** Platform Security  
 **Reviewed:** 2026-07  
 **Classification:** Internal — Confidential
 
-> This document lists every secret used by AfroPay, where it is stored, how
+> This document lists every secret used by RemitX, where it is stored, how
 > it is rotated, and who to contact for emergency revocation. It does **not**
 > contain actual secret values — those live exclusively in HashiCorp Vault.
 
@@ -24,7 +24,7 @@
 
 ## 1. Secret Storage Architecture
 
-All secrets are stored in **HashiCorp Vault** running at `https://vault.afropay.internal:8200`. No plaintext secrets are permitted in:
+All secrets are stored in **HashiCorp Vault** running at `https://vault.remitx.internal:8200`. No plaintext secrets are permitted in:
 
 - Source code or git history
 - Docker Compose files (only Vault references)
@@ -85,7 +85,7 @@ Policy files: [`infrastructure/vault/policies/`](../../infrastructure/vault/poli
 | Postgres credentials (api) | `database/creds/api-role` | Dynamic | 1h (max 24h) | Auto (Vault) |
 | Postgres credentials (reconciler) | `database/creds/reconciler-role` | Dynamic | 1h (max 24h) | Auto (Vault) |
 | Postgres root credential | Set via `POSTGRES_ROOT_PASSWORD` at init | Static | 180 days | Manual |
-| Vault DB connection password | `database/config/afropay-postgres` | Vault internal | 180 days | Manual |
+| Vault DB connection password | `database/config/remitx-postgres` | Vault internal | 180 days | Manual |
 
 **Notes:**
 - Dynamic credentials are fetched by `services/db/vaultCredsManager.ts` and renewed automatically before TTL expiry.
@@ -176,7 +176,7 @@ vault lease revoke <lease-id>
 vault lease revoke -prefix database/creds/api-role
 
 # Force-rotate the DB root credential
-vault write database/config/afropay-postgres \
+vault write database/config/remitx-postgres \
   rotate_root_credentials=true
 
 # Contact: @dba-on-call and @security-lead
@@ -192,7 +192,7 @@ NEW_SECRET=$(openssl rand -hex 32)
 vault kv put secret/api/jwt-secret value="${NEW_SECRET}"
 
 # Rolling restart the API to load the new secret
-kubectl rollout restart deployment/api -n afropay-production
+kubectl rollout restart deployment/api -n remitx-production
 
 # Contact: @platform-oncall
 ```
@@ -204,7 +204,7 @@ kubectl rollout restart deployment/api -n afropay-production
 1. **Immediately** revoke the key in the provider's dashboard (Flutterwave: Settings → API Keys; Paystack: Settings → API Keys).
 2. Generate a new key in the provider dashboard.
 3. Update Vault: `vault kv put secret/api/flutterwave secret_key="<new-key>"`
-4. Rolling restart the API: `kubectl rollout restart deployment/api -n afropay-production`
+4. Rolling restart the API: `kubectl rollout restart deployment/api -n remitx-production`
 5. Review provider audit logs for suspicious activity in the past 24 hours.
 
 ### 4.5 Vault Token / AppRole Compromised

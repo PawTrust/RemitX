@@ -1,5 +1,5 @@
 /**
- * AfroPay k6 Smoke Profile
+ * RemitX k6 Smoke Profile
  * ========================
  * Purpose : Quick sanity check — must pass in CI with p95 < 500 ms and 0% error rate.
  * Profile : 5 VUs, 1 minute (constant).

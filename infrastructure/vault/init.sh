@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Vault Initialization & Bootstrap Script — AfroPay
+# Vault Initialization & Bootstrap Script — RemitX
 # ============================================================================
 # Run ONCE on a fresh Vault instance to:
 #   1. Initialize Vault (generates unseal keys + root token)
@@ -14,7 +14,7 @@
 #   VAULT_ADDR=http://localhost:8200 \
 #   POSTGRES_HOST=localhost \
 #   POSTGRES_PORT=5432 \
-#   POSTGRES_DB=afropay \
+#   POSTGRES_DB=remitx \
 #   POSTGRES_ROOT_USER=postgres \
 #   POSTGRES_ROOT_PASSWORD=<secret> \
 #   ./infrastructure/vault/init.sh
@@ -72,12 +72,12 @@ vault secrets enable database || true
 # ---------------------------------------------------------------------------
 PG_HOST="${POSTGRES_HOST:-localhost}"
 PG_PORT="${POSTGRES_PORT:-5432}"
-PG_DB="${POSTGRES_DB:-afropay}"
+PG_DB="${POSTGRES_DB:-remitx}"
 PG_USER="${POSTGRES_ROOT_USER:-postgres}"
 PG_PASS="${POSTGRES_ROOT_PASSWORD}"
 
 echo "==> Configuring Postgres connection for dynamic credentials..."
-vault write database/config/afropay-postgres \
+vault write database/config/remitx-postgres \
   plugin_name=postgresql-database-plugin \
   allowed_roles="api-role,reconciler-role" \
   connection_url="postgresql://{{username}}:{{password}}@${PG_HOST}:${PG_PORT}/${PG_DB}?sslmode=require" \
@@ -86,7 +86,7 @@ vault write database/config/afropay-postgres \
 
 echo "==> Creating DB role: api-role (1h TTL, read/write)..."
 vault write database/roles/api-role \
-  db_name=afropay-postgres \
+  db_name=remitx-postgres \
   creation_statements="
     CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
     GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO \"{{name}}\";
@@ -98,7 +98,7 @@ vault write database/roles/api-role \
 
 echo "==> Creating DB role: reconciler-role (1h TTL, read-only)..."
 vault write database/roles/reconciler-role \
-  db_name=afropay-postgres \
+  db_name=remitx-postgres \
   creation_statements="
     CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
     GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";

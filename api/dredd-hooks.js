@@ -1,7 +1,7 @@
 /**
  * api/dredd-hooks.js
  *
- * Dredd lifecycle hooks for the AfroPay API contract tests.
+ * Dredd lifecycle hooks for the RemitX API contract tests.
  *
  * Responsibilities:
  *  - Skip endpoints that Dredd cannot drive (SSE stream, stellar.toml plain text, Prometheus metrics)

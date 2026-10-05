@@ -68,9 +68,9 @@ fn format_attestation_message(
     nonce: u64,
 ) -> Vec<u8> {
     // Construct deterministic message for signing
-    // Format: "AFROPAY_ATTESTATION|escrow_id|success|proof|timestamp|nonce"
+    // Format: "REMITX_ATTESTATION|escrow_id|success|proof|timestamp|nonce"
     let mut msg = vec![];
-    msg.extend_from_slice(b"AFROPAY_ATTESTATION|");
+    msg.extend_from_slice(b"REMITX_ATTESTATION|");
     msg.extend_from_slice(escrow_id.as_bytes());
     msg.extend_from_slice(b"|");
     msg.extend_from_slice(if delivery_success { b"true" } else { b"false" });

@@ -14,7 +14,7 @@
  *     &buying_asset_code={quote}
  *     &buying_asset_issuer={quoteIssuer}
  *
- * For the USD/NGN corridor AfroPay uses USDC (Circle) and NGNC (Cowrie) on Stellar.
+ * For the USD/NGN corridor RemitX uses USDC (Circle) and NGNC (Cowrie) on Stellar.
  *
  * The mid-price is computed as the average of the best bid and best ask.
  */

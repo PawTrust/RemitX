@@ -1,6 +1,6 @@
 # aml
 
-Rule-based AML/CFT transaction monitoring engine for AfroPay, built to satisfy CBN AML/CFT
+Rule-based AML/CFT transaction monitoring engine for RemitX, built to satisfy CBN AML/CFT
 Regulations 2022 transaction-monitoring and NFIU SAR-filing requirements.
 
 This is a standalone Rust crate (`std`, not a Soroban contract) since it needs file/S3 I/O and

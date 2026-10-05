@@ -95,7 +95,7 @@ export function buildApp(): Express {
 
     const body = {
       status: horizonConnected ? "ok" : "degraded",
-      service: "afropay-anchor-api",
+      service: "remitx-anchor-api",
       version,
       horizon: {
         url: config.horizonUrl,

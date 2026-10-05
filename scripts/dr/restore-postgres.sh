@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# AfroPay — PostgreSQL Point-in-Time Recovery (PITR) Script
+# RemitX — PostgreSQL Point-in-Time Recovery (PITR) Script
 # =============================================================================
 #
 # Usage:
@@ -10,7 +10,7 @@
 #   -t, --target-time  TIMESTAMP   Recovery target (ISO-8601 UTC).
 #                                  Default: 1 hour before current UTC time.
 #                                  Example: "2026-07-21 06:00:00 UTC"
-#   -s, --stanza       NAME        pgBackRest stanza name (default: afropay)
+#   -s, --stanza       NAME        pgBackRest stanza name (default: remitx)
 #   -d, --pgdata       PATH        PostgreSQL data directory (default: /var/lib/postgresql/data)
 #   -p, --pg-port      PORT        PostgreSQL port on restored instance (default: 5432)
 #   -c, --config       FILE        pgBackRest config file (default: /etc/pgbackrest/pgbackrest.conf)
@@ -46,7 +46,7 @@ set -euo pipefail
 # Defaults
 # ---------------------------------------------------------------------------
 TARGET_TIME=""
-STANZA="afropay"
+STANZA="remitx"
 PGDATA="/var/lib/postgresql/data"
 PG_PORT="5432"
 PGBACKREST_CONFIG="/etc/pgbackrest/pgbackrest.conf"
@@ -153,7 +153,7 @@ trap 'write_result_file' EXIT
 # Precondition checks
 # ---------------------------------------------------------------------------
 log "=========================================================="
-log "AfroPay PostgreSQL PITR Restore"
+log "RemitX PostgreSQL PITR Restore"
 log "=========================================================="
 log "Target time : ${TARGET_TIME}"
 log "Stanza      : ${STANZA}"
@@ -352,7 +352,7 @@ else
   log "Restored DB time: ${DB_TIME}"
 
   # ---- Check 3: Required tables exist ----
-  log "Check 3: Verifying AfroPay tables exist..."
+  log "Check 3: Verifying RemitX tables exist..."
   REQUIRED_TABLES=(
     "checkpoint_store"
     "escrow_events"

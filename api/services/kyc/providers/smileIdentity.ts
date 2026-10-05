@@ -70,7 +70,7 @@ export class SmileIdentityProvider implements BvnProvider {
       // stellarAccount is included as an opaque partner_params reference
       // so Smile Identity can associate the query with an account in audit logs.
       partner_params: {
-        job_id: `afropay-${stellarAccount}-${Date.now()}`,
+        job_id: `remitx-${stellarAccount}-${Date.now()}`,
         user_id: stellarAccount,
         job_type: 5,
       },

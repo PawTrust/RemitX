@@ -1,6 +1,6 @@
-# AfroPay Anchor API
+# RemitX Anchor API
 
-SEP-compliant anchor endpoints for AfroPay's on/off-ramp flows:
+SEP-compliant anchor endpoints for RemitX's on/off-ramp flows:
 
 - **SEP-1** — serves [`public/.well-known/stellar.toml`](../public/.well-known/stellar.toml) with `Content-Type: text/plain` and CORS.
 - **SEP-10** — web authentication (`GET`/`POST` at `WEB_AUTH_ENDPOINT`), `routes/sep10.ts` + `middleware/sep10.ts`.

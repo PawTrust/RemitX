@@ -1,5 +1,5 @@
 # =============================================================================
-# AfroPay Redis DR Validation — Docker Compose
+# RemitX Redis DR Validation — Docker Compose
 # =============================================================================
 #
 # Purpose: Validate that Redis RDB + AOF backups can be used to restore a
@@ -35,7 +35,7 @@ services:
   # --------------------------------------------------------------------------
   redis-primary:
     image: redis:7.2-alpine
-    container_name: afropay-redis-primary
+    container_name: remitx-redis-primary
     command: >
       redis-server
         --save 60 1
@@ -63,7 +63,7 @@ services:
   # --------------------------------------------------------------------------
   redis-seed:
     image: redis:7.2-alpine
-    container_name: afropay-redis-seed
+    container_name: remitx-redis-seed
     depends_on:
       redis-primary:
         condition: service_healthy
@@ -124,7 +124,7 @@ services:
   # --------------------------------------------------------------------------
   redis-backup-copy:
     image: alpine:3.19
-    container_name: afropay-redis-backup-copy
+    container_name: remitx-redis-backup-copy
     depends_on:
       redis-seed:
         condition: service_completed_successfully
@@ -148,7 +148,7 @@ services:
   # --------------------------------------------------------------------------
   redis-restored:
     image: redis:7.2-alpine
-    container_name: afropay-redis-restored
+    container_name: remitx-redis-restored
     depends_on:
       redis-backup-copy:
         condition: service_completed_successfully
@@ -175,7 +175,7 @@ services:
   # --------------------------------------------------------------------------
   redis-validate:
     image: redis:7.2-alpine
-    container_name: afropay-redis-validate
+    container_name: remitx-redis-validate
     depends_on:
       redis-restored:
         condition: service_healthy
@@ -192,7 +192,7 @@ services:
         ACTUAL=$$($${CLI} DBSIZE)
 
         echo "============================================"
-        echo "AfroPay Redis DR Validation"
+        echo "RemitX Redis DR Validation"
         echo "============================================"
         echo "Expected key count : $${EXPECTED}"
         echo "Restored key count : $${ACTUAL}"

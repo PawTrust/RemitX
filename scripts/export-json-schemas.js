@@ -153,7 +153,7 @@ function toJsonSchemaDraft07(openApiSchema, name, allSchemas) {
 
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: `https://afropay.io/schemas/${name}.schema.json`,
+    $id: `https://remitx.io/schemas/${name}.schema.json`,
     title: name,
     ...draft07Schema,
   };
@@ -186,10 +186,10 @@ for (const name of EXPORT_LIST) {
 // ---------------------------------------------------------------------------
 const bundle = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://afropay.io/schemas/afropay-api-schemas.json",
-  title: "AfroPay API — Combined Schema Bundle",
+  $id: "https://remitx.io/schemas/remitx-api-schemas.json",
+  title: "RemitX API — Combined Schema Bundle",
   description:
-    "All reusable schemas from the AfroPay API, exported from api/openapi.yaml for use by the CBN reporting pipeline and partner SDK generators.",
+    "All reusable schemas from the RemitX API, exported from api/openapi.yaml for use by the CBN reporting pipeline and partner SDK generators.",
   definitions: {},
 };
 
@@ -202,7 +202,7 @@ for (const name of EXPORT_LIST) {
   }
 }
 
-const bundlePath = path.join(outDir, "afropay-api-schemas.json");
+const bundlePath = path.join(outDir, "remitx-api-schemas.json");
 fs.writeFileSync(bundlePath, JSON.stringify(bundle, null, 2) + "\n");
 console.log(`  wrote: ${path.relative(process.cwd(), bundlePath)}`);
 

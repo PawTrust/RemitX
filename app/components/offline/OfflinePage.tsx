@@ -84,7 +84,7 @@ export function OfflinePage() {
           <>
             <h1 className="offline-page__title">You're offline</h1>
             <p className="offline-page__body">
-              AfroPay needs an internet connection to show live exchange rates
+              RemitX needs an internet connection to show live exchange rates
               and escrow status. Payments you've already filled in have been
               saved and will be sent automatically when you reconnect.
             </p>
@@ -113,10 +113,10 @@ export function OfflinePage() {
             <p className="offline-page__body">
               {draining
                 ? "Submitting your queued payments…"
-                : "Your queued payments have been submitted. You can continue using AfroPay."}
+                : "Your queued payments have been submitted. You can continue using RemitX."}
             </p>
             <a href="/" className="offline-page__cta">
-              Return to AfroPay
+              Return to RemitX
             </a>
           </>
         )}

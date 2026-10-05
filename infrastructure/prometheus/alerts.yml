@@ -1,10 +1,10 @@
 ---
-# AfroPay Prometheus Alert Rules
+# RemitX Prometheus Alert Rules
 # Loaded by Prometheus via rule_files in prometheus.yml.
 # Each alert maps 1-to-1 with a runbook in docs/operations/runbooks/.
 
 groups:
-  - name: afropay.payments
+  - name: remitx.payments
     interval: 60s
     rules:
       # -----------------------------------------------------------------------
@@ -30,9 +30,9 @@ groups:
           description: >
             {{ $value | humanizePercentage }} of payment submissions are failing
             over the last 5 minutes. Immediate investigation required.
-          runbook_url: "https://github.com/afropay/afropay-stellar-contract/blob/main/docs/operations/runbooks/payment-failure-rate-high.md"
+          runbook_url: "https://github.com/remitx/remitx/blob/main/docs/operations/runbooks/payment-failure-rate-high.md"
 
-  - name: afropay.escrow
+  - name: remitx.escrow
     interval: 60s
     rules:
       # -----------------------------------------------------------------------
@@ -58,9 +58,9 @@ groups:
             At least 1 % of escrows are spending more than 30 minutes in the
             Funded state. This risks timeouts and lost funds if the oracle fails
             to confirm delivery.
-          runbook_url: "https://github.com/afropay/afropay-stellar-contract/blob/main/docs/operations/runbooks/escrow-stuck-in-funded.md"
+          runbook_url: "https://github.com/remitx/remitx/blob/main/docs/operations/runbooks/escrow-stuck-in-funded.md"
 
-  - name: afropay.oracle
+  - name: remitx.oracle
     interval: 30s
     rules:
       # -----------------------------------------------------------------------
@@ -82,9 +82,9 @@ groups:
             The rate oracle has not published a fresh rate for corridor
             {{ $labels.corridor }} in {{ $value | humanizeDuration }}.
             Payments on this corridor may use incorrect exchange rates.
-          runbook_url: "https://github.com/afropay/afropay-stellar-contract/blob/main/docs/operations/runbooks/rate-oracle-staleness.md"
+          runbook_url: "https://github.com/remitx/remitx/blob/main/docs/operations/runbooks/rate-oracle-staleness.md"
 
-  - name: afropay.horizon
+  - name: remitx.horizon
     interval: 30s
     rules:
       # -----------------------------------------------------------------------
@@ -106,4 +106,4 @@ groups:
             The Horizon stream listener is {{ $value }} ledgers behind the chain
             tip (threshold: 100). Escrow state transitions will be delayed and
             the oracle may miss delivery confirmations.
-          runbook_url: "https://github.com/afropay/afropay-stellar-contract/blob/main/docs/operations/runbooks/horizon-stream-lag.md"
+          runbook_url: "https://github.com/remitx/remitx/blob/main/docs/operations/runbooks/horizon-stream-lag.md"

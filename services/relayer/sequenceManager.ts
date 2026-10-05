@@ -17,7 +17,7 @@
  * That method uses Redis SET NX (set if not exists) with a TTL to acquire an
  * exclusive, time-bounded lock on the (accountId, sequence) slot:
  *
- *   Key:   `afropay:seq:<accountId>`
+ *   Key:   `remitx:seq:<accountId>`
  *   Value: `<paymentId>`          — stored so we can detect the same paymentId
  *   NX:    only set if key does not exist
  *   PX:    TTL in milliseconds (default 10 000 ms = 2× Stellar ledger close time)
@@ -65,14 +65,14 @@ export interface SequenceManagerConfig {
   lockTtlMs?: number;
   /**
    * Namespace prefix for all Redis keys produced by this manager.
-   * Default: "afropay:seq".
+   * Default: "remitx:seq".
    */
   keyPrefix?: string;
 }
 
 // Default 2× Stellar ledger close time (5 s per ledger on the public network).
 const DEFAULT_LOCK_TTL_MS = 10_000;
-const DEFAULT_KEY_PREFIX = "afropay:seq";
+const DEFAULT_KEY_PREFIX = "remitx:seq";
 
 // ---------------------------------------------------------------------------
 // SequenceManager

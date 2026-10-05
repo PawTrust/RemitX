@@ -3,7 +3,7 @@
     {
       "name": "DS_PROMETHEUS",
       "label": "Prometheus",
-      "description": "AfroPay Prometheus datasource",
+      "description": "RemitX Prometheus datasource",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
@@ -18,7 +18,7 @@
     { "type": "panel", "id": "piechart", "name": "Pie chart", "version": "" }
   ],
   "annotations": { "list": [] },
-  "description": "AfroPay payment funnel, escrow lifecycle, oracle health, and Horizon stream status",
+  "description": "RemitX payment funnel, escrow lifecycle, oracle health, and Horizon stream status",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -245,7 +245,7 @@
   ],
   "refresh": "30s",
   "schemaVersion": 38,
-  "tags": ["afropay", "payments", "stellar"],
+  "tags": ["remitx", "payments", "stellar"],
   "templating": {
     "list": [
       {
@@ -267,7 +267,7 @@
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "AfroPay Overview",
-  "uid": "afropay-overview",
+  "title": "RemitX Overview",
+  "uid": "remitx-overview",
   "version": 1
 }

@@ -162,7 +162,7 @@ mod tests {
         let report = SuspiciousActivityReport::from_alert(
             &alert,
             &transactions,
-            "AfroPay",
+            "RemitX",
             "compliance-officer-1",
             1_700_100_000,
         );
@@ -191,7 +191,7 @@ mod tests {
         let report = SuspiciousActivityReport::from_alert(
             &alert,
             &transactions,
-            "AfroPay",
+            "RemitX",
             "compliance-officer-1",
             1_700_100_000,
         );
@@ -206,7 +206,7 @@ mod tests {
         let report = SuspiciousActivityReport::from_alert(
             &alert,
             &transactions,
-            "AfroPay",
+            "RemitX",
             "compliance-officer-1",
             1_700_100_000,
         );

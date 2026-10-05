@@ -1,8 +1,8 @@
 {
-  "name": "afropay-anchor-api",
+  "name": "remitx-anchor-api",
   "version": "0.1.0",
   "private": true,
-  "description": "AfroPay Stellar anchor API — SEP-1, SEP-10, SEP-12, SEP-31 compliant endpoints",
+  "description": "RemitX Stellar anchor API — SEP-1, SEP-10, SEP-12, SEP-31 compliant endpoints",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

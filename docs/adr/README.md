@@ -1,8 +1,8 @@
 # Architecture Decision Records
 
-This directory contains the Architecture Decision Records (ADRs) for AfroPay. ADRs document significant design decisions so that contributors can understand *why* the codebase is built the way it is — not just *what* it does.
+This directory contains the Architecture Decision Records (ADRs) for RemitX. ADRs document significant design decisions so that contributors can understand *why* the codebase is built the way it is — not just *what* it does.
 
-AfroPay uses the [MADR format](https://adr.github.io/madr/) (Markdown Architecture Decision Records).
+RemitX uses the [MADR format](https://adr.github.io/madr/) (Markdown Architecture Decision Records).
 
 ---
 

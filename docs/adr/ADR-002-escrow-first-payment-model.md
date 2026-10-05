@@ -2,13 +2,13 @@
 
 **Date:** 2024-01-18  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay needs to move USDC from a sender on Stellar to a recipient via an off-ramp agent who disburses local currency (e.g., NGN, GHS, KES) to the recipient's bank or mobile money account. The core challenge is sequencing: how do we ensure the sender's funds are not released to the agent until delivery is confirmed, while also ensuring the sender cannot reclaim funds while the agent is mid-delivery?
+RemitX needs to move USDC from a sender on Stellar to a recipient via an off-ramp agent who disburses local currency (e.g., NGN, GHS, KES) to the recipient's bank or mobile money account. The core challenge is sequencing: how do we ensure the sender's funds are not released to the agent until delivery is confirmed, while also ensuring the sender cannot reclaim funds while the agent is mid-delivery?
 
 Two fundamentally different approaches were considered: an escrow-first model (lock first, release after attestation) and a direct atomic swap model (release and deliver simultaneously). This decision determines the trust model, attack surface, and the role of oracles in the protocol.
 
@@ -85,7 +85,7 @@ Two fundamentally different approaches were considered: an escrow-first model (l
 **Cons:**
 - Requires agents to pre-fund channels, locking capital
 - Complex dispute and closure mechanics
-- Unsuitable for one-off or infrequent remittances (most of AfroPay's use case)
+- Unsuitable for one-off or infrequent remittances (most of RemitX's use case)
 - Not supported natively by Soroban at this time
 
 **Reason rejected:** Capital inefficiency and complexity are not appropriate for the initial product.
@@ -115,7 +115,7 @@ Two fundamentally different approaches were considered: an escrow-first model (l
 
 ## References
 
-- [AfroPay Contract Design](../contract-design.md) — Full state machine diagram
+- [RemitX Contract Design](../contract-design.md) — Full state machine diagram
 - [ADR-004](ADR-004-multi-source-oracle-median.md) — Oracle design that mitigates oracle collusion risk
 - [Escrow state machine — `src/escrow.rs`](../../src/escrow.rs)
 - Related issue: #39

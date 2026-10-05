@@ -37,7 +37,7 @@ sum by (corridor) (rate(payment_submissions_total[5m]))
 ```bash
 curl https://horizon-testnet.stellar.org  # or mainnet
 # Also check the /health endpoint:
-curl https://api.afropay.io/health
+curl https://api.remitx.io/health
 ```
 If `horizon.connected` is `false`, the root cause is Horizon unavailability — see escalation below.
 
@@ -46,7 +46,7 @@ If `rate_oracle_staleness_seconds` > 120 for the failing corridor, payments are 
 
 ### 4. Check API error logs
 ```bash
-kubectl logs -l app=afropay-api --since=10m | grep '"status":"failure"'
+kubectl logs -l app=remitx-api --since=10m | grep '"status":"failure"'
 ```
 Look for recurring error patterns: contract rejection codes, Horizon submission errors, KYC failures.
 

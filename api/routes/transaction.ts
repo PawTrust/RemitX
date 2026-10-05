@@ -50,7 +50,7 @@ router.get("/stream/:escrow_id", (req: Request, res: Response): void => {
   const txExists = transactions.has(escrowId) || transactionEventStore.has(escrowId);
 
   // Constant-time dummy comparison to prevent timing-based enumeration
-  const dummyBuf = Buffer.from("afropay-constant-time-dummy");
+  const dummyBuf = Buffer.from("remitx-constant-time-dummy");
   try {
     timingSafeEqual(dummyBuf, dummyBuf);
   } catch {
@@ -119,7 +119,7 @@ router.get("/:escrow_id/status", (req: Request, res: Response): void => {
   const escrowId = req.params.escrow_id;
   const events = transactionEventStore.all(escrowId);
 
-  const dummyBuf = Buffer.from("afropay-constant-time-dummy");
+  const dummyBuf = Buffer.from("remitx-constant-time-dummy");
   try {
     timingSafeEqual(dummyBuf, dummyBuf);
   } catch {

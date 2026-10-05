@@ -140,7 +140,7 @@ function wrapKeyWithEcdh(contentKey, serverPrivateKey, fanX25519PublicKey) {
     const sharedSecret = performEcdh(serverPrivateKey, fanX25519PublicKey);
     // HKDF to derive a wrapping key
     const wrappingKey = crypto.hkdfSync("sha256", sharedSecret, Buffer.alloc(0), // salt
-    Buffer.from("afropay-content-key-wrap", "utf8"), // info
+    Buffer.from("remitx-content-key-wrap", "utf8"), // info
     32);
     // Use AES-GCM to wrap the content key
     const { encryptedData, iv, authTag } = encryptAesGcm(contentKey, Buffer.from(wrappingKey));

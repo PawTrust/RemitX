@@ -29,7 +29,7 @@
  * and submit, and then release it.  The remaining 49 will receive a
  * `DuplicatePaymentError` immediately after the first lock is acquired.
  *
- * This is intentional: AfroPay does not retry on behalf of the caller.
+ * This is intentional: RemitX does not retry on behalf of the caller.
  * The caller (e.g. the webhook processor) is responsible for deduplicating
  * requests before calling `submitPayment`.
  */

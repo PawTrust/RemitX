@@ -1,7 +1,7 @@
 /**
  * reconciler.ts
  *
- * Chain-vs-DB reconciliation service for AfroPay escrow state.
+ * Chain-vs-DB reconciliation service for RemitX escrow state.
  *
  * Chain state is the ground truth.  The reconciler:
  *   1. Loads all open escrow IDs from the DB.

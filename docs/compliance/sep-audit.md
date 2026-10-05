@@ -1,7 +1,7 @@
-# AfroPay SEP Compliance Audit
+# RemitX SEP Compliance Audit
 
 - **Date:** 2026-07-17
-- **Scope:** SEP-1 (stellar.toml), SEP-10 (Web Authentication), SEP-31 (Cross-Border Payments), plus SEP-12 (KYC) as a hard dependency of SEP-31. SEP-6 and SEP-24 are out of scope (AfroPay's primary flow is SEP-31; see issue #42).
+- **Scope:** SEP-1 (stellar.toml), SEP-10 (Web Authentication), SEP-31 (Cross-Border Payments), plus SEP-12 (KYC) as a hard dependency of SEP-31. SEP-6 and SEP-24 are out of scope (RemitX's primary flow is SEP-31; see issue #42).
 - **Method:** Requirement-by-requirement review against the SEP specifications, followed by conformance verification with the official [`@stellar/anchor-tests`](https://github.com/stellar/stellar-anchor-tests) suite v0.6.22.
 - **References:** [SEP-1], [SEP-10], [SEP-12], [SEP-31].
 
@@ -81,7 +81,7 @@ SEP-12 was not listed in issue #42 but is a hard dependency of SEP-31 (`sender_i
 | 31.8 | `GET /transactions/:id`: 404 for unknown IDs and for transactions not created by the authenticated anchor | Non-Compliant | Compliant | |
 | 31.9 | `PATCH /transactions/:id` accepts updates only in `pending_transaction_info_update`; rejects unexpected fields | Non-Compliant | Compliant | |
 | 31.10 | `PUT /transactions/:id/callback` registers status callback URL | Non-Compliant | Compliant | Callback *delivery* (signed `Signature` header) not yet wired to status transitions — see residual gaps |
-| 31.11 | Quotes (SEP-38) integration | N/A | N/A | `quote_id`/`destination_asset` not supported; AfroPay quotes FX via its oracle layer on-chain |
+| 31.11 | Quotes (SEP-38) integration | N/A | N/A | `quote_id`/`destination_asset` not supported; RemitX quotes FX via its oracle layer on-chain |
 
 ## Verification evidence
 

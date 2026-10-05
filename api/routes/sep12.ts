@@ -9,7 +9,7 @@ router.use(requireSep10);
 
 const formData = multer();
 
-/** Fields AfroPay requires to KYC a SEP-31 sender or receiver. */
+/** Fields RemitX requires to KYC a SEP-31 sender or receiver. */
 export const REQUIRED_CUSTOMER_FIELDS: Record<
   string,
   { type: string; description: string; optional?: boolean }

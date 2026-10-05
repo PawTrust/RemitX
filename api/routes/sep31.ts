@@ -7,7 +7,7 @@ import { customers, transactions, Sep31Transaction } from "../store";
 
 const router = Router();
 
-/** Per-transaction fields AfroPay needs to deliver an off-chain payment. */
+/** Per-transaction fields RemitX needs to deliver an off-chain payment. */
 const TRANSACTION_FIELDS: Record<
   string,
   { description: string; optional?: boolean; choices?: string[] }

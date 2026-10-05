@@ -1,8 +1,8 @@
 {
-  "name": "afropay-oracle",
+  "name": "remitx-oracle",
   "version": "0.1.0",
   "private": true,
-  "description": "Multi-source FX rate oracle aggregator for AfroPay — Flutterwave, CBN, Stellar DEX",
+  "description": "Multi-source FX rate oracle aggregator for RemitX — Flutterwave, CBN, Stellar DEX",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {

@@ -1,4 +1,4 @@
-# afropay-relayer
+# remitx-relayer
 
 Stellar transaction relayer with atomic Redis-backed sequence-number reservation.
 
@@ -11,7 +11,7 @@ Stellar transactions require a monotonically-increasing sequence number per acco
 Before building any transaction, the relayer atomically acquires a per-account lock via **Redis `SET NX PX`**:
 
 ```
-SET afropay:seq:<accountId> <paymentId> NX PX <ttlMs>
+SET remitx:seq:<accountId> <paymentId> NX PX <ttlMs>
 ```
 
 - **`NX`** — only set if the key does not exist (atomic check-and-set).
@@ -25,12 +25,12 @@ If the key already exists, a `DuplicatePaymentError` is thrown immediately — t
 ```
 Submission A (wins lock)         Submission B (rejected)
 ─────────────────────────────    ──────────────────────────
-SET afropay:seq:G… → OK          SET afropay:seq:G… → null
+SET remitx:seq:G… → OK          SET remitx:seq:G… → null
 loadAccount(G…)                  throw DuplicatePaymentError
 buildTransaction(seq=101)
 sign(tx)
 submitTransaction(tx)
-DEL afropay:seq:G…
+DEL remitx:seq:G…
 ```
 
 ### Key design decisions
@@ -64,7 +64,7 @@ const redis = new Redis(process.env.REDIS_URL);
 
 const sequenceManager = new SequenceManager(redis, {
   lockTtlMs: 10_000,   // default: 10 s (2× ledger close time)
-  keyPrefix: "afropay:seq", // default
+  keyPrefix: "remitx:seq", // default
 });
 
 const relayer = new Relayer(sequenceManager, {

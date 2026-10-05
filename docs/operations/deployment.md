@@ -1,7 +1,7 @@
-# AfroPay — Deployment Pipeline
+# RemitX — Deployment Pipeline
 
 > **Audience:** Developers, DevOps engineers, and on-call engineers.
-> This document describes the end-to-end CI/CD pipeline, deployment strategies, rollback procedures, and operational expectations for the AfroPay platform.
+> This document describes the end-to-end CI/CD pipeline, deployment strategies, rollback procedures, and operational expectations for the RemitX platform.
 
 ---
 
@@ -158,8 +158,8 @@ build-and-push ──► deploy-staging ──► smoke-test
 
 **1. Build & push (`build-and-push` job)**
 
-- Builds `Dockerfile.api` → `ghcr.io/<owner>/afropay-api:<sha>`
-- Builds `Dockerfile.frontend` → `ghcr.io/<owner>/afropay-frontend:<sha>`
+- Builds `Dockerfile.api` → `ghcr.io/<owner>/remitx-api:<sha>`
+- Builds `Dockerfile.frontend` → `ghcr.io/<owner>/remitx-frontend:<sha>`
 - Both images are also tagged `:staging-latest`
 - Layer caching is stored in GHCR (`type=registry` buildx cache)
 - OCI labels (`source`, `revision`, `created`) are applied
@@ -203,7 +203,7 @@ build-and-push ──► deploy-staging ──► smoke-test
 
 The workflow is gated on the `production` GitHub Environment. This environment must be configured with:
 
-- **Required reviewers:** `@afropay/production-approvers`
+- **Required reviewers:** `@remitx/production-approvers`
 - **Prevent self-review:** enabled
 - **Wait timer:** optional (e.g. 30 minutes minimum notice)
 
@@ -214,26 +214,26 @@ No code executes until a member of `production-approvers` approves the pending d
 ```
 BEFORE CUT-OVER
   Service selector → slot: blue
-  afropay-api         (blue, current image)
-  afropay-api-green   (not yet started)
+  remitx-api         (blue, current image)
+  remitx-api-green   (not yet started)
 
 AFTER GREEN PODS READY
-  afropay-api         (blue, old image)   ← still receiving traffic
-  afropay-api-green   (green, new image)  ← standing by
+  remitx-api         (blue, old image)   ← still receiving traffic
+  remitx-api-green   (green, new image)  ← standing by
 
 CUT-OVER
   kubectl patch service → selector: slot: green
   → all new requests go to green pods
 
 SMOKE TEST PASSES
-  kubectl set image afropay-api (update blue to new image)
+  kubectl set image remitx-api (update blue to new image)
   kubectl patch service → selector: slot: blue
-  kubectl delete deployment afropay-api-green
+  kubectl delete deployment remitx-api-green
   Tag images as :prod-stable
 
 SMOKE TEST FAILS (within 2 min)
   kubectl patch service → selector: slot: blue   ← instant revert
-  kubectl delete deployment afropay-api-green
+  kubectl delete deployment remitx-api-green
   Job exits non-zero → GitHub marks deploy as failed
 ```
 
@@ -258,7 +258,7 @@ Triggered automatically on:
 - `/health` not returning 200 within 2 minutes post-deploy
 - k6 smoke test threshold breach (`p95 ≥ 500ms` or `error_rate > 0`)
 
-Action: `kubectl rollout undo deployment/afropay-api -n <namespace>`
+Action: `kubectl rollout undo deployment/remitx-api -n <namespace>`
 
 ### Automatic rollback (production)
 
@@ -272,48 +272,48 @@ Action: Revert service selector to `slot: blue` and delete green deployment.
 
 ```bash
 # Roll back to the previous revision
-kubectl rollout undo deployment/afropay-api -n afropay-staging
-kubectl rollout undo deployment/afropay-frontend -n afropay-staging
+kubectl rollout undo deployment/remitx-api -n remitx-staging
+kubectl rollout undo deployment/remitx-frontend -n remitx-staging
 
 # Verify
-kubectl rollout status deployment/afropay-api -n afropay-staging
+kubectl rollout status deployment/remitx-api -n remitx-staging
 ```
 
 ### Manual rollback (production)
 
 ```bash
 # Option 1: Revert service selector (if green still exists)
-kubectl patch service afropay-api -n afropay-production \
+kubectl patch service remitx-api -n remitx-production \
   --type=merge -p '{"spec":{"selector":{"slot":"blue"}}}'
-kubectl patch service afropay-frontend -n afropay-production \
+kubectl patch service remitx-frontend -n remitx-production \
   --type=merge -p '{"spec":{"selector":{"slot":"blue"}}}'
 
 # Option 2: Roll back the blue deployment to a previous image
-kubectl rollout undo deployment/afropay-api -n afropay-production
-kubectl rollout undo deployment/afropay-frontend -n afropay-production
+kubectl rollout undo deployment/remitx-api -n remitx-production
+kubectl rollout undo deployment/remitx-frontend -n remitx-production
 
 # Option 3: Pin to a specific prod-stable image
-kubectl set image deployment/afropay-api \
-  api=ghcr.io/<owner>/afropay-api:prod-stable \
-  -n afropay-production
+kubectl set image deployment/remitx-api \
+  api=ghcr.io/<owner>/remitx-api:prod-stable \
+  -n remitx-production
 ```
 
 ### Roll back to a specific image tag
 
 ```bash
-kubectl set image deployment/afropay-api \
-  api=ghcr.io/<owner>/afropay-api:<TAG> \
-  -n afropay-production
-kubectl rollout status deployment/afropay-api -n afropay-production
+kubectl set image deployment/remitx-api \
+  api=ghcr.io/<owner>/remitx-api:<TAG> \
+  -n remitx-production
+kubectl rollout status deployment/remitx-api -n remitx-production
 ```
 
 ### View rollout history
 
 ```bash
-kubectl rollout history deployment/afropay-api -n afropay-production
+kubectl rollout history deployment/remitx-api -n remitx-production
 # Show details of a specific revision
-kubectl rollout history deployment/afropay-api \
-  -n afropay-production --revision=3
+kubectl rollout history deployment/remitx-api \
+  -n remitx-production --revision=3
 ```
 
 ---
@@ -324,13 +324,13 @@ kubectl rollout history deployment/afropay-api \
 
 | Path pattern | Required reviewers |
 |---|---|
-| `*` | `@afropay/core-team` (default) |
-| `contracts/**`, `src/contract.rs` etc. | `@afropay/contracts-team` |
-| `db/migrations/**`, `api/migrations/**` | `@afropay/dba-team` + `@afropay/backend-leads` |
-| `.github/workflows/**`, `.github/CODEOWNERS` | `@afropay/devops-team` + `@afropay/core-team` |
-| `api/services/crypto.ts`, SEP-10 middleware | `@afropay/security-team` + `@afropay/backend-leads` |
-| `infrastructure/vault/**` | `@afropay/security-team` + `@afropay/devops-team` |
-| `load-tests/**` | `@afropay/devops-team` + `@afropay/core-team` |
+| `*` | `@remitx/core-team` (default) |
+| `contracts/**`, `src/contract.rs` etc. | `@remitx/contracts-team` |
+| `db/migrations/**`, `api/migrations/**` | `@remitx/dba-team` + `@remitx/backend-leads` |
+| `.github/workflows/**`, `.github/CODEOWNERS` | `@remitx/devops-team` + `@remitx/core-team` |
+| `api/services/crypto.ts`, SEP-10 middleware | `@remitx/security-team` + `@remitx/backend-leads` |
+| `infrastructure/vault/**` | `@remitx/security-team` + `@remitx/devops-team` |
+| `load-tests/**` | `@remitx/devops-team` + `@remitx/core-team` |
 
 **Enforcement:** Enable "Require review from Code Owners" on branch protection for `main` and `develop`.
 
@@ -351,10 +351,10 @@ kubectl rollout history deployment/afropay-api \
 
 | Variable | Default | Description |
 |---|---|---|
-| `STAGING_API_URL` | — | Base URL of staging API, e.g. `https://api.staging.afropay.io` |
-| `PROD_API_URL` | — | Base URL of production API, e.g. `https://api.afropay.io` |
-| `KUBE_NAMESPACE` | `afropay-staging` | Kubernetes namespace for staging |
-| `KUBE_NAMESPACE_PROD` | `afropay-production` | Kubernetes namespace for production |
+| `STAGING_API_URL` | — | Base URL of staging API, e.g. `https://api.staging.remitx.io` |
+| `PROD_API_URL` | — | Base URL of production API, e.g. `https://api.remitx.io` |
+| `KUBE_NAMESPACE` | `remitx-staging` | Kubernetes namespace for staging |
+| `KUBE_NAMESPACE_PROD` | `remitx-production` | Kubernetes namespace for production |
 
 ### Generating the base64 kubeconfig
 
@@ -390,7 +390,7 @@ Paste the output as the value of `KUBECONFIG_STAGING`.
 
 ```bash
 k6 run \
-  --env BASE_URL=https://api.staging.afropay.io \
+  --env BASE_URL=https://api.staging.remitx.io \
   load-tests/scenarios/smoke.js
 ```
 
@@ -426,10 +426,10 @@ Check if the staging cluster is undersized. The smoke test runs 5 concurrent VUs
 
 ```bash
 # Inspect recent pod events
-kubectl describe pod -l app=afropay-api -n afropay-staging | tail -40
+kubectl describe pod -l app=remitx-api -n remitx-staging | tail -40
 
 # Tail logs of the new pod
-kubectl logs -l app=afropay-api -n afropay-staging --since=5m
+kubectl logs -l app=remitx-api -n remitx-staging --since=5m
 ```
 
 ### Production: Deployment stuck waiting for approval
@@ -446,17 +446,17 @@ gh run approve <run-id>
 
 ```bash
 # Check green deployment events
-kubectl describe deployment afropay-api-green -n afropay-production
+kubectl describe deployment remitx-api-green -n remitx-production
 
 # Check pod crash logs
-kubectl logs -l slot=green -n afropay-production --previous
+kubectl logs -l slot=green -n remitx-production --previous
 ```
 
 If the green pods cannot start, the service selector was never switched, so production is unaffected. Delete the green deployment and investigate:
 
 ```bash
-kubectl delete deployment afropay-api-green -n afropay-production
-kubectl delete deployment afropay-frontend-green -n afropay-production
+kubectl delete deployment remitx-api-green -n remitx-production
+kubectl delete deployment remitx-frontend-green -n remitx-production
 ```
 
 ### k6 not found / install fails
@@ -470,4 +470,4 @@ docker run --rm -i grafana/k6:latest run \
 
 ---
 
-*Last updated: 2026-07-24 — Initial pipeline implementation (closes [#31](https://github.com/afropay/afropay-stellar-contract/issues/31))*
+*Last updated: 2026-07-24 — Initial pipeline implementation (closes [#31](https://github.com/remitx/remitx/issues/31))*

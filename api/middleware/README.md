@@ -1,6 +1,6 @@
 # API Middleware
 
-This directory contains Express middleware modules used by the AfroPay anchor API.
+This directory contains Express middleware modules used by the RemitX anchor API.
 
 ---
 
@@ -46,7 +46,7 @@ Dynamic path segments are normalised before labelling (UUIDs → `:id`, Stellar 
 ```json
 {
   "status": "ok",
-  "service": "afropay-anchor-api",
+  "service": "remitx-anchor-api",
   "version": "0.1.0",
   "horizon": {
     "url": "https://horizon-testnet.stellar.org",

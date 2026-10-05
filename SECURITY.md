@@ -1,6 +1,6 @@
 # Security Policy
 
-AfroPay handles real financial value on-chain. We take security vulnerabilities seriously and appreciate the responsible disclosure of any issues you discover.
+RemitX handles real financial value on-chain. We take security vulnerabilities seriously and appreciate the responsible disclosure of any issues you discover.
 
 ---
 
@@ -21,21 +21,21 @@ AfroPay handles real financial value on-chain. We take security vulnerabilities 
 
 ### Option 1 — GitHub Private Security Advisory (preferred)
 
-1. Go to the [Security Advisories page](https://github.com/afropay/afropay-stellar-contract/security/advisories/new).
+1. Go to the [Security Advisories page](https://github.com/remitx/remitx/security/advisories/new).
 2. Click **"Report a vulnerability"**.
 3. Fill in the title, description, severity estimate, and any proof-of-concept code.
 4. Submit. The maintainers will be notified privately.
 
 ### Option 2 — Email
 
-Send an encrypted email to **security@afropay.io** with:
+Send an encrypted email to **security@remitx.io** with:
 
 - Subject line: `[SECURITY] <short description>`
 - A description of the vulnerability and its impact
 - Steps to reproduce or a proof-of-concept
 - Your preferred handle for credit in the advisory
 
-We recommend encrypting the email with our PGP key (available at `https://afropay.io/.well-known/security.txt`).
+We recommend encrypting the email with our PGP key (available at `https://remitx.io/.well-known/security.txt`).
 
 ---
 
@@ -92,7 +92,7 @@ We use CVSS 3.1 as a baseline and adjust for on-chain context:
 
 ## Bug Bounty
 
-AfroPay does not currently operate a formal paid bug bounty programme. Contributors who responsibly disclose **Critical** or **High** severity issues will be:
+RemitX does not currently operate a formal paid bug bounty programme. Contributors who responsibly disclose **Critical** or **High** severity issues will be:
 
 1. Credited by name (or handle) in the public security advisory.
 2. Listed in the project's `ACKNOWLEDGEMENTS.md`.
@@ -113,6 +113,6 @@ All contributors should read [docs/developer-handbook/code-style.md](docs/develo
 
 ## Contact
 
-- **Security email:** security@afropay.io
-- **Discord (maintainers):** [AfroPay Community](https://discord.gg/afropay) — DM a maintainer with the `@maintainer` role
-- **GitHub Advisory:** https://github.com/afropay/afropay-stellar-contract/security/advisories/new
+- **Security email:** security@remitx.io
+- **Discord (maintainers):** [RemitX Community](https://discord.gg/remitx) — DM a maintainer with the `@maintainer` role
+- **GitHub Advisory:** https://github.com/remitx/remitx/security/advisories/new

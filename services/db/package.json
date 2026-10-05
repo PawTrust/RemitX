@@ -1,8 +1,8 @@
 {
-  "name": "afropay-db",
+  "name": "remitx-db",
   "version": "0.1.0",
   "private": true,
-  "description": "Vault-backed dynamic Postgres credential manager for AfroPay",
+  "description": "Vault-backed dynamic Postgres credential manager for RemitX",
   "scripts": {
     "test": "jest --runInBand --forceExit",
     "test:ci": "jest --runInBand --forceExit --ci"

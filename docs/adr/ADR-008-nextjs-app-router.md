@@ -2,13 +2,13 @@
 
 **Date:** 2024-03-10  
 **Status:** Accepted  
-**Deciders:** AfroPay core team
+**Deciders:** RemitX core team
 
 ---
 
 ## Context and Problem Statement
 
-AfroPay needs a web frontend for the sender dashboard: initiating transfers, tracking escrow status, claiming refunds, and displaying transaction history. The frontend must integrate with Stellar wallets (Freighter, Lobstr), the NestJS API layer, and Horizon's event stream.
+RemitX needs a web frontend for the sender dashboard: initiating transfers, tracking escrow status, claiming refunds, and displaying transaction history. The frontend must integrate with Stellar wallets (Freighter, Lobstr), the NestJS API layer, and Horizon's event stream.
 
 The choice of frontend architecture determines SEO capability, performance characteristics, developer experience, and long-term maintenance burden.
 
@@ -92,7 +92,7 @@ The choice of frontend architecture determines SEO capability, performance chara
 
 **Cons:**
 - Smaller ecosystem and community than Next.js
-- Fewer AfroPay team members have Remix experience
+- Fewer RemitX team members have Remix experience
 - Stellar wallet libraries have fewer Remix examples in the community
 - Deployment options are more limited than Vercel/Next.js
 
@@ -127,5 +127,5 @@ The choice of frontend architecture determines SEO capability, performance chara
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023)
 - [Freighter API](https://docs.freighter.app/)
 - [Stellar Wallets Kit](https://stellarwallets.org/)
-- [AfroPay Architecture Overview](../../README.md#architecture-overview)
+- [RemitX Architecture Overview](../../README.md#architecture-overview)
 - Related issue: #39

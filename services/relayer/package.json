@@ -1,5 +1,5 @@
 {
-  "name": "afropay-relayer",
+  "name": "remitx-relayer",
   "version": "0.1.0",
   "private": true,
   "description": "Stellar transaction relayer with atomic Redis-backed sequence-number reservation",

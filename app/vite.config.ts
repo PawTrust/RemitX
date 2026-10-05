@@ -16,8 +16,8 @@ export default defineConfig({
         enabled: true,
       },
       manifest: {
-        name: "AfroPay",
-        short_name: "AfroPay",
+        name: "RemitX",
+        short_name: "RemitX",
         description:
           "Trustless cross-border remittances on Stellar — fast, low-cost, unstoppable.",
         theme_color: "#1a1a2e",

@@ -163,7 +163,7 @@ describe("GET /health", () => {
         const res = await (0, supertest_1.default)(app).get("/health");
         // May be 200 or 503 depending on Horizon reachability in CI
         expect([200, 503]).toContain(res.status);
-        expect(res.body).toHaveProperty("service", "afropay-anchor-api");
+        expect(res.body).toHaveProperty("service", "remitx-anchor-api");
         expect(res.body).toHaveProperty("version");
         expect(typeof res.body.version).toBe("string");
         expect(res.body).toHaveProperty("horizon");

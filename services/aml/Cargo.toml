@@ -2,7 +2,7 @@
 name = "aml"
 version = "0.1.0"
 edition = "2021"
-description = "Rule-based AML/CFT transaction monitoring engine and NFIU SAR export for AfroPay"
+description = "Rule-based AML/CFT transaction monitoring engine and NFIU SAR export for RemitX"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

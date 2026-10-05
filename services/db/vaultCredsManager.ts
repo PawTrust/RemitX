@@ -201,7 +201,7 @@ export class VaultCredsManager extends EventEmitter {
     this.pgHost = opts.pgHost ?? process.env.PGHOST ?? "localhost";
     this.pgPort = opts.pgPort ?? parseInt(process.env.PGPORT ?? "5432", 10);
     this.pgDatabase = String(
-      opts.pgDatabase ?? process.env.PGDATABASE ?? "afropay"
+      opts.pgDatabase ?? process.env.PGDATABASE ?? "remitx"
     );
     this.pgSsl = opts.pgSsl ?? process.env.PGSSL === "true";
     this.pgPoolSize = opts.pgPoolSize ?? 10;

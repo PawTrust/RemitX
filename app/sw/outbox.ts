@@ -51,7 +51,7 @@ interface OutboxSchema extends DBSchema {
 // DB singleton
 // ---------------------------------------------------------------------------
 
-const DB_NAME = "afropay-outbox";
+const DB_NAME = "remitx-outbox";
 const DB_VERSION = 1;
 const STORE = "outbox" as const;
 const MAX_ATTEMPTS = 5;

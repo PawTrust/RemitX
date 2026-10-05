@@ -1,4 +1,4 @@
-# AfroPay Load Test Baseline
+# RemitX Load Test Baseline
 
 **Date:** 2026-07-20  
 **Environment:** Staging (single-node, 2 vCPU / 4 GB RAM, Testnet Horizon)  
@@ -124,12 +124,12 @@ The smoke profile must pass on every PR before merge.
 k6 run --env BASE_URL=http://localhost:8000 load-tests/scenarios/smoke.js
 
 # Load (staging characterisation)
-k6 run --env BASE_URL=http://staging.afropay.io \
+k6 run --env BASE_URL=http://staging.remitx.io \
        --env LOAD_VUS=100 \
        load-tests/scenarios/load.js
 
 # Stress (find the cliff)
-k6 run --env BASE_URL=http://staging.afropay.io \
+k6 run --env BASE_URL=http://staging.remitx.io \
        --env STRESS_MAX_VUS=500 \
        load-tests/scenarios/stress.js
 

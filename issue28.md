@@ -1,8 +1,8 @@
 Summary
-Build a structured adversarial test suite (api/tests/adversarial/) that simulates attacker behavior against AfroPay's payment and escrow endpoints: replay attacks, HMAC forgery, sequence-number manipulation, mass-account enumeration, and fee-manipulation attempts. Each scenario must be implemented as a repeatable automated test, not a one-off manual probe.
+Build a structured adversarial test suite (api/tests/adversarial/) that simulates attacker behavior against RemitX's payment and escrow endpoints: replay attacks, HMAC forgery, sequence-number manipulation, mass-account enumeration, and fee-manipulation attempts. Each scenario must be implemented as a repeatable automated test, not a one-off manual probe.
 
 Background
-Security testing at AfroPay is currently limited to basic input validation unit tests. There is no systematic adversarial coverage. A sophisticated attacker targeting a remittance platform would attempt: replaying captured signed requests, submitting crafted fee parameters to underpay fees, enumerating account balances via timing side-channels, and bypassing the idempotency key check via header spoofing. These scenarios must be codified before the platform handles real funds.
+Security testing at RemitX is currently limited to basic input validation unit tests. There is no systematic adversarial coverage. A sophisticated attacker targeting a remittance platform would attempt: replaying captured signed requests, submitting crafted fee parameters to underpay fees, enumerating account balances via timing side-channels, and bypassing the idempotency key check via header spoofing. These scenarios must be codified before the platform handles real funds.
 
 Work Required
 Implement the following adversarial test scenarios in api/tests/adversarial/:

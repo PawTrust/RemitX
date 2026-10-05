@@ -75,9 +75,9 @@ jobs:
         run: |
           cat > /tmp/gitleaks.toml << 'TOML'
           # ===================================================================
-          # AfroPay gitleaks configuration
+          # RemitX gitleaks configuration
           # ===================================================================
-          title = "AfroPay Secret Scan Rules"
+          title = "RemitX Secret Scan Rules"
 
           # -------------------------------------------------------------------
           # Extend the default ruleset with project-specific patterns

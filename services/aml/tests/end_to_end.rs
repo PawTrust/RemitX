@@ -50,7 +50,7 @@ fn structuring_pattern_flows_through_review_and_sar_export() {
     let report = SuspiciousActivityReport::from_alert(
         &views[0],
         &all_transactions,
-        "AfroPay",
+        "RemitX",
         "compliance-officer-1",
         3_100,
     );

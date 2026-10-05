@@ -142,7 +142,7 @@ export function wrapKeyWithEcdh(
     "sha256",
     sharedSecret,
     Buffer.alloc(0), // salt
-    Buffer.from("afropay-content-key-wrap", "utf8"), // info
+    Buffer.from("remitx-content-key-wrap", "utf8"), // info
     32
   );
 

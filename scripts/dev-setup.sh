@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# scripts/dev-setup.sh — AfroPay one-command local dev setup
+# scripts/dev-setup.sh — RemitX one-command local dev setup
 # ============================================================
 # Usage:
 #   bash scripts/dev-setup.sh          # core stack (api + postgres + redis)
@@ -26,7 +26,7 @@ step()    { echo -e "\n${BOLD}▶ $*${RESET}"; }
 banner()  {
   echo -e "${BOLD}${GREEN}"
   echo "  ╔══════════════════════════════════════════╗"
-  echo "  ║  AfroPay Local Development Environment  ║"
+  echo "  ║  RemitX Local Development Environment  ║"
   echo "  ╚══════════════════════════════════════════╝"
   echo -e "${RESET}"
 }
@@ -70,7 +70,7 @@ done
 
 # ── Teardown path ─────────────────────────────────────────────────────────────
 if $TEARDOWN; then
-  step "Stopping AfroPay dev stack"
+  step "Stopping RemitX dev stack"
   cd "$REPO_ROOT"
   if $RESET_VOLUMES; then
     warn "Removing ALL volumes — database and Redis data will be lost."
@@ -137,7 +137,7 @@ if [[ ! -f "$ENV_FILE" ]]; then
     info "Creating default .env for local development"
     cat > "$ENV_FILE" <<'ENVEOF'
 # ============================================================
-# AfroPay Local Development Environment
+# RemitX Local Development Environment
 # ============================================================
 # These are safe defaults for local development only.
 # NEVER use these values in production or staging.
@@ -157,7 +157,7 @@ JWT_SECRET=dev-jwt-secret-replace-in-production-32chars
 MASTER_ENCRYPTION_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 
 # Database
-POSTGRES_PASSWORD=afropay_dev_password
+POSTGRES_PASSWORD=remitx_dev_password
 
 # Redis
 REDIS_URL=redis://localhost:6379
@@ -200,7 +200,7 @@ step "Waiting for PostgreSQL to be ready"
 WAIT_TIMEOUT=120
 ELAPSED=0
 until docker compose -f "$COMPOSE_FILE" exec -T postgres \
-  pg_isready -U afropay -d afropay -q 2>/dev/null; do
+  pg_isready -U remitx -d remitx -q 2>/dev/null; do
   sleep 2
   ELAPSED=$((ELAPSED + 2))
   if [[ $ELAPSED -ge $WAIT_TIMEOUT ]]; then
@@ -236,13 +236,13 @@ RUN_MIGRATION() {
   name=$(basename "$file")
   info "Applying migration: $name"
   docker compose -f "$COMPOSE_FILE" exec -T postgres \
-    psql -U afropay -d afropay -f "/dev/stdin" < "$file" 2>&1 | \
+    psql -U remitx -d remitx -f "/dev/stdin" < "$file" 2>&1 | \
     grep -v "already exists" | grep -v "^$" || true
 }
 
 # Check if core migration tables exist; if not run manually (handles volumes reset case)
 TABLES_EXIST=$(docker compose -f "$COMPOSE_FILE" exec -T postgres \
-  psql -U afropay -d afropay -tAc \
+  psql -U remitx -d remitx -tAc \
   "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='escrow_events'" \
   2>/dev/null | tr -d '[:space:]')
 
@@ -259,7 +259,7 @@ else
 fi
 
 # ── Start API service ─────────────────────────────────────────────────────────
-step "Starting AfroPay API"
+step "Starting RemitX API"
 $COMPOSE_CMD -f "$COMPOSE_FILE" up -d api
 
 # Wait for API health
@@ -333,7 +333,7 @@ SECONDS_REMAINING=$((ELAPSED % 60))
 
 echo ""
 echo -e "${BOLD}${GREEN}╔══════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}${GREEN}║  AfroPay dev stack is running! (${MINUTES}m ${SECONDS_REMAINING}s elapsed)            ║${RESET}"
+echo -e "${BOLD}${GREEN}║  RemitX dev stack is running! (${MINUTES}m ${SECONDS_REMAINING}s elapsed)            ║${RESET}"
 echo -e "${BOLD}${GREEN}╚══════════════════════════════════════════════════════════╝${RESET}"
 echo ""
 echo -e "  ${BOLD}Service endpoints:${RESET}"
@@ -344,7 +344,7 @@ echo -e "  • SEP-10 auth     → ${BLUE}http://localhost:8000/auth${RESET}"
 echo -e "  • SEP-12 KYC      → ${BLUE}http://localhost:8000/kyc${RESET}"
 echo -e "  • SEP-31 payments → ${BLUE}http://localhost:8000/sep31${RESET}"
 echo -e "  • Metrics         → ${BLUE}http://localhost:8000/metrics${RESET}"
-echo -e "  • PostgreSQL      → ${BLUE}localhost:5432${RESET}  (user: afropay, db: afropay)"
+echo -e "  • PostgreSQL      → ${BLUE}localhost:5432${RESET}  (user: remitx, db: remitx)"
 echo -e "  • Redis           → ${BLUE}localhost:6379${RESET}"
 
 if $FULL_STACK; then
@@ -358,7 +358,7 @@ echo -e "  • View logs:       docker compose -f docker-compose.dev.yml logs -f
 echo -e "  • Stop stack:      bash scripts/dev-setup.sh --down"
 echo -e "  • Wipe and restart: bash scripts/dev-setup.sh --reset"
 echo -e "  • Build contracts: docker compose -f docker-compose.dev.yml --profile contracts run contracts"
-echo -e "  • Connect to DB:   docker compose -f docker-compose.dev.yml exec postgres psql -U afropay afropay"
+echo -e "  • Connect to DB:   docker compose -f docker-compose.dev.yml exec postgres psql -U remitx remitx"
 echo ""
 echo -e "  ${YELLOW}Tip: Run 'bash scripts/dev-setup.sh --full' to also start listener, reconciliation, and oracle.${RESET}"
 echo ""

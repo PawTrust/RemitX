@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use afropay_stellar_contract::{RemittanceContract, Escrow, EscrowState};
+    use remitx::{RemittanceContract, Escrow, EscrowState};
 
     #[test]
     fn test_contract_initialization() {

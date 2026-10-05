@@ -1,4 +1,4 @@
-# AfroPay Disaster Recovery Runbook
+# RemitX Disaster Recovery Runbook
 
 **Version:** 1.0  
 **Last Updated:** 2026-07-21  
@@ -27,7 +27,7 @@
 
 ## 1. Overview & Targets
 
-AfroPay is a remittance platform handling real USDC escrow funds. Data loss or extended downtime has direct financial consequences for users. This runbook defines the recovery procedures, targets, and monthly drill schedule.
+RemitX is a remittance platform handling real USDC escrow funds. Data loss or extended downtime has direct financial consequences for users. This runbook defines the recovery procedures, targets, and monthly drill schedule.
 
 | Target | Value | Justification |
 |--------|-------|---------------|
@@ -61,11 +61,11 @@ AfroPay is a remittance platform handling real USDC escrow funds. Data loss or e
                │  Differential backup (daily Mon–Sat 02:00 UTC)
                ▼
 ┌─────────────────────────────────────────────────────────┐
-│  S3 Bucket: afropay-db-backups                          │
+│  S3 Bucket: remitx-db-backups                          │
 │  Encryption: AES-256-CBC (pgBackRest cipher)            │
 │  Region: us-east-1                                      │
 │  Retention: 2 full + 14 diff backups                   │
-│  Path layout: afropay/backup/*, afropay/archive/*       │
+│  Path layout: remitx/backup/*, remitx/archive/*       │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -85,7 +85,7 @@ Relevant files:
                │  /data/dump.rdb + /data/appendonly.aof
                ▼
 ┌─────────────────────────────────────────────────────────┐
-│  S3 Bucket: afropay-redis-backups                       │
+│  S3 Bucket: remitx-redis-backups                       │
 │  Sync: every 15 min via cron (rclone s3 copy)           │
 │  Retention: 7 days of snapshots                         │
 └─────────────────────────────────────────────────────────┘
@@ -101,11 +101,11 @@ All credentials are stored in **AWS Secrets Manager** and injected at runtime:
 
 | Secret Name | Contents | Rotation |
 |-------------|----------|----------|
-| `afropay/prod/postgres` | DB password, connection string | 90 days |
-| `afropay/prod/redis` | Redis AUTH password | 90 days |
-| `afropay/prod/stellar` | Stellar signing key (encrypted) | Manual |
-| `afropay/prod/pgbackrest` | S3 key, cipher passphrase | 90 days |
-| `afropay/prod/slack-webhook` | DR drill Slack webhook URL | On rotation |
+| `remitx/prod/postgres` | DB password, connection string | 90 days |
+| `remitx/prod/redis` | Redis AUTH password | 90 days |
+| `remitx/prod/stellar` | Stellar signing key (encrypted) | Manual |
+| `remitx/prod/pgbackrest` | S3 key, cipher passphrase | 90 days |
+| `remitx/prod/slack-webhook` | DR drill Slack webhook URL | On rotation |
 
 ---
 
@@ -158,7 +158,7 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
 4. **Inject secrets** (do not hard-code):
    ```bash
    export PGBACKREST_S3_KEY=$(aws secretsmanager get-secret-value \
-     --secret-id afropay/prod/pgbackrest --query SecretString --output text | jq -r .s3_key)
+     --secret-id remitx/prod/pgbackrest --query SecretString --output text | jq -r .s3_key)
    export PGBACKREST_S3_KEY_SECRET=$(...)
    export PGBACKREST_REPO1_CIPHER_PASS=$(...)
    ```
@@ -168,7 +168,7 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
    # Restore to latest available WAL (full recovery)
    ./scripts/dr/restore-postgres.sh \
      --target-time "$(date -u +"%Y-%m-%d %H:%M:%S UTC")" \
-     --stanza afropay \
+     --stanza remitx \
      --pgdata /var/lib/postgresql/data
    ```
 
@@ -200,14 +200,14 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
 2. **Do not restart or write to the database** — stop the API layer first:
    ```bash
    # Scale down API pods / stop the service
-   kubectl scale deployment afropay-api --replicas=0
+   kubectl scale deployment remitx-api --replicas=0
    ```
 
 3. **Run PITR restore to 1 minute before the corruption:**
    ```bash
    ./scripts/dr/restore-postgres.sh \
      --target-time "2026-07-21 05:59:00 UTC" \
-     --stanza afropay \
+     --stanza remitx \
      --pgdata /var/lib/postgresql/data
    ```
 
@@ -215,7 +215,7 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
 
 5. **Re-enable the API layer** once you confirm the corrupt rows are absent:
    ```bash
-   kubectl scale deployment afropay-api --replicas=3
+   kubectl scale deployment remitx-api --replicas=3
    ```
 
 6. **Identify root cause** and add a migration or constraint to prevent recurrence.
@@ -237,14 +237,14 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
 
 1. **Copy backup files from S3:**
    ```bash
-   aws s3 cp s3://afropay-redis-backups/latest/dump.rdb /data/dump.rdb
-   aws s3 cp s3://afropay-redis-backups/latest/appendonly.aof /data/appendonly.aof
+   aws s3 cp s3://remitx-redis-backups/latest/dump.rdb /data/dump.rdb
+   aws s3 cp s3://remitx-redis-backups/latest/appendonly.aof /data/appendonly.aof
    ```
 
 2. **Start a new Redis instance** with the backup config:
    ```bash
    docker run -d \
-     --name afropay-redis-restored \
+     --name remitx-redis-restored \
      -v /data:/data \
      -p 6379:6379 \
      redis:7.2-alpine \
@@ -282,9 +282,9 @@ The `archive_command` calls `pgbackrest archive-push`, which uploads the WAL seg
 
 ```bash
 # Rotate the Postgres password
-psql -c "ALTER USER afropay_api PASSWORD 'new-strong-password';"
+psql -c "ALTER USER remitx_api PASSWORD 'new-strong-password';"
 # Update Secrets Manager
-aws secretsmanager put-secret-value --secret-id afropay/prod/postgres \
+aws secretsmanager put-secret-value --secret-id remitx/prod/postgres \
   --secret-string '{"password":"new-strong-password"}'
 ```
 
@@ -306,8 +306,8 @@ A compromised Stellar signing key requires:
 **Recovery:** Scale up API pods (stateless service). No data recovery needed.
 
 ```bash
-kubectl rollout restart deployment/afropay-api
-kubectl get pods -l app=afropay-api -w
+kubectl rollout restart deployment/remitx-api
+kubectl get pods -l app=remitx-api -w
 ```
 
 **RTO for API-only failure:** < 5 minutes.
@@ -344,12 +344,12 @@ Run on a staging environment — never on production during a drill.
 
 ```bash
 # 1. Confirm backup coverage
-pgbackrest --stanza=afropay info
+pgbackrest --stanza=remitx info
 
 # 2. Run restore to 1 hour ago
 ./scripts/dr/restore-postgres.sh \
   --target-time "$(date -u -d '1 hour ago' +'%Y-%m-%d %H:%M:%S UTC')" \
-  --stanza afropay
+  --stanza remitx
 
 # 3. Confirm result
 cat docs/operations/dr-drill-results/*_result.json | jq .
@@ -398,7 +398,7 @@ docs/operations/dr-drill-results/
 
 **Incident channel:** `#incidents` on Slack  
 **DR alerts channel:** `#dr-alerts` on Slack  
-**PagerDuty service:** `afropay-platform`
+**PagerDuty service:** `remitx-platform`
 
 ---
 
@@ -435,19 +435,19 @@ After any production DR activation (not drills):
 
 ```bash
 # Check pgBackRest backup status
-pgbackrest --stanza=afropay info
+pgbackrest --stanza=remitx info
 
 # Verify WAL archiving is working
-pgbackrest --stanza=afropay check
+pgbackrest --stanza=remitx check
 
 # Take an ad-hoc full backup
-pgbackrest --stanza=afropay backup --type=full
+pgbackrest --stanza=remitx backup --type=full
 
 # Restore to latest
-pgbackrest --stanza=afropay restore
+pgbackrest --stanza=remitx restore
 
 # Restore to specific time (PITR)
-pgbackrest --stanza=afropay restore \
+pgbackrest --stanza=remitx restore \
   --type=time \
   --target="2026-07-21 06:00:00 UTC" \
   --target-action=promote
@@ -466,8 +466,8 @@ docker compose -f infrastructure/backup/docker-compose.redis-dr-test.yml up
 ### S3 Bucket Layout
 
 ```
-afropay-db-backups/
-└── afropay/
+remitx-db-backups/
+└── remitx/
     ├── archive/
     │   └── 16-1/           # PostgreSQL 16, system identifier
     │       └── WAL/        # WAL segments (continuous)
@@ -476,7 +476,7 @@ afropay-db-backups/
         ├── 20260602-020000D/  # Differential
         └── ...
 
-afropay-redis-backups/
+remitx-redis-backups/
 ├── latest/
 │   ├── dump.rdb
 │   └── appendonly.aof

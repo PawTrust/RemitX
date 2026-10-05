@@ -1,4 +1,4 @@
-# AfroPay Oracle Integration Protocol
+# RemitX Oracle Integration Protocol
 
 ## 1. Overview
 
@@ -42,11 +42,11 @@ register_oracle(
 1. Generate Ed25519 keypair locally
 2. Derive Stellar address from public key
 3. Fund with small XLM balance (for contract fees)
-4. Register with AfroPay admin via `register_oracle()`
+4. Register with RemitX admin via `register_oracle()`
 5. Store private key in secure hardware wallet or environment
 
 **Private key safeguards:**
-- ✅ Never transmitted to AfroPay API
+- ✅ Never transmitted to RemitX API
 - ✅ Stored in Oracle operator's HSM (Hardware Security Module)
 - ✅ Rotated every 90 days
 - ✅ Audited by compliance team
@@ -101,16 +101,16 @@ pub struct OracleAttestation {
 ### 4.1 Message Format
 
 ```
-AFROPAY_ATTESTATION|escrow_id|success|proof|timestamp|nonce
+REMITX_ATTESTATION|escrow_id|success|proof|timestamp|nonce
 ```
 
 **Example:**
 ```
-AFROPAY_ATTESTATION|escrow_12345|true|BANK_TXN_98765|1704067200|1
+REMITX_ATTESTATION|escrow_12345|true|BANK_TXN_98765|1704067200|1
 ```
 
 **Components:**
-- `AFROPAY_ATTESTATION` — Protocol identifier
+- `REMITX_ATTESTATION` — Protocol identifier
 - `escrow_id` — From contract (immutable)
 - `success` — `true` or `false` (lowercase)
 - `proof` — Delivery reference (max 256 chars)
@@ -134,7 +134,7 @@ delivery_proof = "BANK_TXN_98765"
 timestamp = int(time.time())
 nonce = 1
 
-message = f"AFROPAY_ATTESTATION|{escrow_id}|{str(delivery_success).lower()}|{delivery_proof}|{timestamp}|{nonce}"
+message = f"REMITX_ATTESTATION|{escrow_id}|{str(delivery_success).lower()}|{delivery_proof}|{timestamp}|{nonce}"
 message_bytes = message.encode('utf-8')
 
 # Sign with Ed25519
@@ -361,7 +361,7 @@ Oracle keeps NGN spread or earns commission
 
 **Typical margin:**
 - Sender pays: 100 USDC
-- Oracle receives: 99.5 USDC (0.5% fee to AfroPay treasury)
+- Oracle receives: 99.5 USDC (0.5% fee to RemitX treasury)
 - Oracle's arbitrage: 99.5 USDC × exchange_rate = 39,800 NGN
 - Oracle sells NGN for USD, retains spread (~0.2–0.5%)
 
@@ -369,7 +369,7 @@ Oracle keeps NGN spread or earns commission
 
 **If recipient claims non-delivery:**
 
-1. **Recipient reports via AfroPay app** (with proof of non-receipt)
+1. **Recipient reports via RemitX app** (with proof of non-receipt)
 2. **API freezes escrow** (state remains `Released`, but flagged)
 3. **Manual review:**
    - Check recipient's bank statement
@@ -377,13 +377,13 @@ Oracle keeps NGN spread or earns commission
    - Decide: Oracle refund to sender or sender receives refund + compensation
 4. **Enforcement:**
    - Oracle can be delisted if > 0.5% dispute rate
-   - Sender receives USDC + bounty (from AfroPay reserve)
+   - Sender receives USDC + bounty (from RemitX reserve)
 
 ---
 
 ## 9. Multi-Oracle Setup (Future)
 
-**For higher security, AfroPay can require M-of-N oracle quorum:**
+**For higher security, RemitX can require M-of-N oracle quorum:**
 
 ```rust
 fn release_to_agent_quorum(
@@ -487,7 +487,7 @@ fn test_replay_attack_prevention() {
 
 ## 12. Oracle Operator Checklist
 
-Before becoming an AfroPay Oracle:
+Before becoming an RemitX Oracle:
 
 - [ ] Register Stellar address
 - [ ] Generate Ed25519 keypair (secure HSM)

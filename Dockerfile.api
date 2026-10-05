@@ -1,5 +1,5 @@
 # ============================================================
-# Dockerfile.api — AfroPay Anchor API (Express / Node.js 22)
+# Dockerfile.api — RemitX Anchor API (Express / Node.js 22)
 # ============================================================
 # Multi-stage build:
 #   deps     — install production node_modules only
@@ -51,18 +51,18 @@ FROM node:22-alpine3.20 AS runner
 WORKDIR /app
 
 # Non-root user for security
-RUN addgroup -g 1001 -S nodejs && adduser -S afropay -u 1001 -G nodejs
+RUN addgroup -g 1001 -S nodejs && adduser -S remitx -u 1001 -G nodejs
 
 # Copy compiled output + production dependencies
-COPY --from=builder --chown=afropay:nodejs /app/dist ./dist
-COPY --from=prod-deps --chown=afropay:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=afropay:nodejs /app/package.json ./
+COPY --from=builder --chown=remitx:nodejs /app/dist ./dist
+COPY --from=prod-deps --chown=remitx:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=remitx:nodejs /app/package.json ./
 
 # Copy stellar.toml so the API can serve SEP-1 in local dev.
 # In production this is volume-mounted or served via CDN.
-COPY --chown=afropay:nodejs public/ ./public/
+COPY --chown=remitx:nodejs public/ ./public/
 
-USER afropay
+USER remitx
 
 EXPOSE 8000
 

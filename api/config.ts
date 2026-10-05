@@ -17,7 +17,7 @@ export interface AnchorConfig {
   jwtSecret: string;
   jwtExpirySeconds: number;
   challengeTimeoutSeconds: number;
-  /** host[:port] used as the challenge home domain, e.g. "api.afropay.io" or "localhost:8000" */
+  /** host[:port] used as the challenge home domain, e.g. "api.remitx.io" or "localhost:8000" */
   homeDomain: string;
   /** host[:port] of the web auth endpoint (SEP-10 web_auth_domain) */
   webAuthDomain: string;

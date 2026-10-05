@@ -3,7 +3,7 @@
  * SEP-1 stellar.toml validator.
  *
  * Fails (exit 1) if public/.well-known/stellar.toml is missing, malformed,
- * or lacks the fields AfroPay's anchor integrations require. Run from the
+ * or lacks the fields RemitX's anchor integrations require. Run from the
  * repository root after `npm ci --prefix api` (reuses the API's dependencies).
  */
 import { createRequire } from "module";

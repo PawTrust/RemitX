@@ -126,7 +126,7 @@ router.post("/", kycGate, (req: Request, res: Response): void => {
 // ---------------------------------------------------------------------------
 router.get("/:id", (req: Request, res: Response): void => {
   const record = escrows.get(req.params.id);
-  const dummyBuf = Buffer.from("afropay-constant-time-dummy");
+  const dummyBuf = Buffer.from("remitx-constant-time-dummy");
   try {
     timingSafeEqual(dummyBuf, dummyBuf);
   } catch {

@@ -1,4 +1,4 @@
-# AfroPay — Data-Flow Diagram (DFD)
+# RemitX — Data-Flow Diagram (DFD)
 
 **Version:** 1.0.0  
 **Date:** 2026-07-30  
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document provides a Level-1 Data-Flow Diagram (DFD) of the AfroPay remittance system. It identifies all processes, external entities, data stores, and the five trust boundaries that separate security zones. The DFD is the primary input for the [STRIDE analysis](./stride-analysis.md).
+This document provides a Level-1 Data-Flow Diagram (DFD) of the RemitX remittance system. It identifies all processes, external entities, data stores, and the five trust boundaries that separate security zones. The DFD is the primary input for the [STRIDE analysis](./stride-analysis.md).
 
 ---
 
@@ -24,7 +24,7 @@ This document provides a Level-1 Data-Flow Diagram (DFD) of the AfroPay remittan
 │ ═════════╪═══════════ TB-1 (Browser ↔ API) ══════════════╪════════════════════════════ │
 │          │                           │                    │                             │
 │   ┌──────▼───────────────────────────▼────────────────────▼──────────────────────────┐ │
-│   │  AfroPay API Layer (Express / NestJS)                                             │ │
+│   │  RemitX API Layer (Express / NestJS)                                             │ │
 │   │                                                                                   │ │
 │   │  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐    │ │
 │   │  │  SEP-10 Auth│  │  Escrow API  │  │ Webhook Rcvr │  │  Oracle Submit     │    │ │
@@ -81,7 +81,7 @@ flowchart TD
     SorobanState[("fa:fa-link  Soroban\nContract Storage")]
 
     %% ── Processes ───────────────────────────────────────────────────────────────
-    API["P1: AfroPay API\n(Express)"]
+    API["P1: RemitX API\n(Express)"]
     SEP10["P2: SEP-10 Auth\n(HS256 / Ed25519 JWT)"]
     EscrowRoute["P3: Escrow Routes\n(POST /escrow, /release)"]
     WebhookFLW["P4: Flutterwave Webhook\n(HMAC-SHA512 verify)"]

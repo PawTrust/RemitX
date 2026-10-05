@@ -1,10 +1,10 @@
 openapi: 3.1.0
 
 info:
-  title: AfroPay Anchor API
+  title: RemitX Anchor API
   version: "0.1.0"
   description: |
-    AfroPay Stellar anchor API implementing SEP-1, SEP-10, SEP-12, and SEP-31
+    RemitX Stellar anchor API implementing SEP-1, SEP-10, SEP-12, and SEP-31
     for trustless cross-border remittances on Stellar.
 
     ## Authentication
@@ -32,15 +32,15 @@ info:
     replays the original response for duplicate keys.
 
   contact:
-    name: AfroPay Engineering
-    email: dev@afropay.io
-    url: https://discord.gg/afropay
+    name: RemitX Engineering
+    email: dev@remitx.io
+    url: https://discord.gg/remitx
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 
 servers:
-  - url: https://api.afropay.io
+  - url: https://api.remitx.io
     description: Production
   - url: http://localhost:8000
     description: Local development
@@ -633,7 +633,7 @@ components:
         contentUrl:
           type: string
           format: uri
-          example: "https://cdn.afropay.io/content/video-123.mp4"
+          example: "https://cdn.remitx.io/content/video-123.mp4"
 
     ContentUploadResponse:
       type: object
@@ -816,7 +816,7 @@ components:
           enum: [ok, degraded]
         service:
           type: string
-          example: "afropay-anchor-api"
+          example: "remitx-anchor-api"
         version:
           type: string
           example: "0.1.0"
@@ -931,7 +931,7 @@ paths:
                 $ref: "#/components/schemas/HealthResponse"
               example:
                 status: ok
-                service: afropay-anchor-api
+                service: remitx-anchor-api
                 version: "0.1.0"
                 horizon:
                   url: "https://horizon-testnet.stellar.org"
@@ -1015,7 +1015,7 @@ paths:
           description: Must match the server's configured home domain.
           schema:
             type: string
-            example: "api.afropay.io"
+            example: "api.remitx.io"
         - name: client_domain
           in: query
           required: false
@@ -1803,7 +1803,7 @@ paths:
                 $ref: "#/components/schemas/ReconcileResponse"
               example:
                 run_id: "42"
-                triggered_by: "ops@afropay.io"
+                triggered_by: "ops@remitx.io"
                 total_checked: 1500
                 total_matched: 1498
                 total_discrepancies: 2
