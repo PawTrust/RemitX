@@ -25,12 +25,12 @@ fn test_release_escrow_guard_set_on_entry() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
-    let guard_key = String::from_str(&env, &format!("reentrancy_guard_{}", escrow_id.clone()));
+    let guard_key = (soroban_sdk::Symbol::new(&env, "guard"), escrow_id.clone());
 
     // Verify guard is NOT set before operation
-    assert!(!env.storage().has(&guard_key), "Guard should not be set initially");
+    assert!(!env.storage().instance().has(&guard_key), "Guard should not be set initially");
 }
 
 /// Test 2: Verify state consistency after protected operation
@@ -56,13 +56,13 @@ fn test_release_escrow_state_consistency() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Call release_escrow
     EscrowContract::release_escrow(env.clone(), escrow_id.clone(), beneficiary.clone());
 
     // Verify state was updated
-    let updated_escrow: Escrow = env.storage().get(&escrow_id).unwrap();
+    let updated_escrow: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(updated_escrow.state, EscrowState::Released, "State should be Released after operation");
     assert!(updated_escrow.released_at.is_some(), "released_at should be set");
 }
@@ -90,13 +90,13 @@ fn test_release_escrow_guard_cleared_on_exit() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     EscrowContract::release_escrow(env.clone(), escrow_id.clone(), beneficiary);
 
     // Verify guard is cleaned up after operation
-    let guard_key = String::from_str(&env, &format!("reentrancy_guard_{}", escrow_id));
-    assert!(!env.storage().has(&guard_key), "Guard should be cleaned up after operation");
+    let guard_key = (soroban_sdk::Symbol::new(&env, "guard"), escrow_id.clone());
+    assert!(!env.storage().instance().has(&guard_key), "Guard should be cleaned up after operation");
 }
 
 /// Test 4: Concurrent operation isolation (multiple escrows)
@@ -143,16 +143,16 @@ fn test_concurrent_escrows_independent_guards() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id1, &escrow1);
-    env.storage().set(&escrow_id2, &escrow2);
+    env.storage().persistent().set(&escrow_id1, &escrow1);
+    env.storage().persistent().set(&escrow_id2, &escrow2);
 
     // Process both escrows independently
     EscrowContract::release_escrow(env.clone(), escrow_id1.clone(), beneficiary1);
     EscrowContract::release_escrow(env.clone(), escrow_id2.clone(), beneficiary2);
 
     // Verify both are released independently
-    let updated1: Escrow = env.storage().get(&escrow_id1).unwrap();
-    let updated2: Escrow = env.storage().get(&escrow_id2).unwrap();
+    let updated1: Escrow = env.storage().persistent().get(&escrow_id1).unwrap();
+    let updated2: Escrow = env.storage().persistent().get(&escrow_id2).unwrap();
 
     assert_eq!(updated1.state, EscrowState::Released);
     assert_eq!(updated2.state, EscrowState::Released);
@@ -182,7 +182,7 @@ fn test_refund_escrow_guard_protection() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Advance ledger past timelock
     env.ledger().with_mut(|ledger| {
@@ -193,7 +193,7 @@ fn test_refund_escrow_guard_protection() {
     EscrowContract::refund_escrow(env.clone(), escrow_id.clone(), sender);
 
     // Verify state updated
-    let refunded: Escrow = env.storage().get(&escrow_id).unwrap();
+    let refunded: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(refunded.state, EscrowState::Refunded);
     assert!(refunded.refunded_at.is_some());
 }
@@ -222,12 +222,12 @@ fn test_dispute_escrow_guard_protection() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Initiate dispute
     EscrowContract::dispute_escrow(env.clone(), escrow_id.clone(), sender.clone());
 
-    let disputed: Escrow = env.storage().get(&escrow_id).unwrap();
+    let disputed: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(disputed.state, EscrowState::Disputed);
     assert!(disputed.disputed_at.is_some());
 }
@@ -255,12 +255,12 @@ fn test_fund_escrow_guard_protection() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Fund the escrow
     EscrowContract::fund_escrow(env.clone(), escrow_id.clone(), sender);
 
-    let funded: Escrow = env.storage().get(&escrow_id).unwrap();
+    let funded: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(funded.state, EscrowState::Funded);
     assert!(funded.funded_at.is_some());
 }
@@ -273,8 +273,10 @@ fn test_create_escrow_basic() {
     let beneficiary = Address::random(&env);
     let arbitrator = Address::random(&env);
 
-    let id = EscrowContract::create_escrow(
+    let id = String::from_str(&env, "test_id");
+    EscrowContract::create_escrow(
         env.clone(),
+        id.clone(),
         sender.clone(),
         beneficiary.clone(),
         arbitrator.clone(),
@@ -283,7 +285,7 @@ fn test_create_escrow_basic() {
         3600,
     );
 
-    let escrow: Escrow = env.storage().get(&id).unwrap();
+    let escrow: Escrow = env.storage().persistent().get(&id).unwrap();
     assert_eq!(escrow.id, id);
     assert_eq!(escrow.sender, sender);
     assert_eq!(escrow.beneficiary, beneficiary);
@@ -317,7 +319,7 @@ fn test_get_escrow_basic() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     let retrieved = EscrowContract::get_escrow(env.clone(), escrow_id);
     assert_eq!(retrieved.id, escrow.id);
@@ -348,12 +350,12 @@ fn test_resolve_dispute_basic() {
         disputed_at: Some(0),
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Resolve the dispute
     EscrowContract::resolve_dispute(env.clone(), escrow_id.clone(), arbitrator, true);
 
-    let resolved: Escrow = env.storage().get(&escrow_id).unwrap();
+    let resolved: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(resolved.state, EscrowState::Resolved);
 }
 
@@ -366,8 +368,10 @@ fn test_state_transition_sequence() {
     let arbitrator = Address::random(&env);
 
     // Create escrow
+    let id = String::from_str(&env, "test_id");
     let escrow_id = EscrowContract::create_escrow(
         env.clone(),
+        id,
         sender.clone(),
         beneficiary.clone(),
         arbitrator.clone(),
@@ -377,17 +381,17 @@ fn test_state_transition_sequence() {
     );
 
     // Verify Pending state
-    let escrow1: Escrow = env.storage().get(&escrow_id).unwrap();
+    let escrow1: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(escrow1.state, EscrowState::Pending);
 
     // Fund escrow
     EscrowContract::fund_escrow(env.clone(), escrow_id.clone(), sender.clone());
-    let escrow2: Escrow = env.storage().get(&escrow_id).unwrap();
+    let escrow2: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(escrow2.state, EscrowState::Funded);
 
     // Release escrow
     EscrowContract::release_escrow(env.clone(), escrow_id.clone(), beneficiary.clone());
-    let escrow3: Escrow = env.storage().get(&escrow_id).unwrap();
+    let escrow3: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(escrow3.state, EscrowState::Released);
 }
 
@@ -415,7 +419,7 @@ fn test_invalid_state_transition_pending_to_refunded() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Try to refund from Pending state (invalid)
     EscrowContract::refund_escrow(env.clone(), escrow_id, sender);
@@ -446,7 +450,7 @@ fn test_fund_escrow_authorization() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // Try to fund as non-sender
     EscrowContract::fund_escrow(env.clone(), escrow_id, other);
@@ -463,6 +467,7 @@ fn test_create_escrow_invalid_timelock() {
 
     EscrowContract::create_escrow(
         env.clone(),
+        String::from_str(&env, "test_id"),
         sender,
         beneficiary,
         arbitrator,
@@ -483,6 +488,7 @@ fn test_create_escrow_invalid_amount() {
 
     EscrowContract::create_escrow(
         env.clone(),
+        String::from_str(&env, "test_id"),
         sender,
         beneficiary,
         arbitrator,
@@ -516,7 +522,7 @@ fn test_guard_prevents_double_release() {
         disputed_at: None,
     };
 
-    env.storage().set(&escrow_id, &escrow);
+    env.storage().persistent().set(&escrow_id, &escrow);
 
     // First release should succeed
     EscrowContract::release_escrow(env.clone(), escrow_id.clone(), beneficiary.clone());
@@ -534,8 +540,10 @@ fn test_create_escrow_large_amount() {
     let arbitrator = Address::random(&env);
 
     let max_amount = i128::MAX / 2; // Large but safe amount
+    let id = String::from_str(&env, "test_id");
     let escrow_id = EscrowContract::create_escrow(
         env.clone(),
+        id,
         sender.clone(),
         beneficiary.clone(),
         arbitrator.clone(),
@@ -544,7 +552,7 @@ fn test_create_escrow_large_amount() {
         3600,
     );
 
-    let escrow: Escrow = env.storage().get(&escrow_id).unwrap();
+    let escrow: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(escrow.amount, max_amount);
 }
 
@@ -557,8 +565,10 @@ fn test_create_escrow_small_amount() {
     let arbitrator = Address::random(&env);
 
     let min_amount = 1i128;
+    let id = String::from_str(&env, "test_id");
     let escrow_id = EscrowContract::create_escrow(
         env.clone(),
+        id,
         sender.clone(),
         beneficiary.clone(),
         arbitrator.clone(),
@@ -567,6 +577,6 @@ fn test_create_escrow_small_amount() {
         3600,
     );
 
-    let escrow: Escrow = env.storage().get(&escrow_id).unwrap();
+    let escrow: Escrow = env.storage().persistent().get(&escrow_id).unwrap();
     assert_eq!(escrow.amount, min_amount);
 }

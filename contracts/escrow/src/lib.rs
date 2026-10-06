@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contracttype, Address, Env, Map, Vec, String, panic};
+use soroban_sdk::{contract, contracttype, contractimpl, Address, Env, String};
 
 pub mod migration;
 use migration::{EscrowMigrationError, migrate as run_migrate};
@@ -44,6 +44,7 @@ impl EscrowContract {
     /// Create a new escrow
     pub fn create_escrow(
         env: Env,
+        id: String,
         sender: Address,
         beneficiary: Address,
         arbitrator: Address,
@@ -58,7 +59,7 @@ impl EscrowContract {
             panic!("Timelock must be positive");
         }
 
-        let id = String::from_str(&env, &env.crypto().random().unwrap().to_string());
+        // id passed as argument
         
         let escrow = Escrow {
             id: id.clone(),
@@ -76,7 +77,7 @@ impl EscrowContract {
             disputed_at: None,
         };
 
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
         id
     }
 
@@ -89,7 +90,7 @@ impl EscrowContract {
         }
         escrow.state = EscrowState::Funded;
         escrow.funded_at = Some(env.ledger().timestamp());
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
     }
 
     /// Release funds to beneficiary (Funded -> Released)
@@ -98,7 +99,7 @@ impl EscrowContract {
     /// Guard prevents logical reentrancy if external contract calls back before
     /// state is persisted.
     pub fn release_escrow(env: Env, id: String, beneficiary: Address) {
-        let guard_key = soroban_sdk::Symbol::new(&env, &format!("reentrancy_guard_{}", id));
+        let guard_key = (soroban_sdk::Symbol::new(&env, "guard"), id.clone());
 
         // CHECK: Guard is not set (reentrancy detection)
         if env.storage().instance().has(&guard_key) {
@@ -118,7 +119,7 @@ impl EscrowContract {
         // EFFECTS: Update state atomically before external calls
         escrow.state = EscrowState::Released;
         escrow.released_at = Some(env.ledger().timestamp());
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
 
         // INTERACTIONS: External calls happen after state update
         // (When token transfers are implemented, they go here)
@@ -132,7 +133,7 @@ impl EscrowContract {
     ///
     /// Implements checks-effects-interactions pattern with reentrancy guard.
     pub fn refund_escrow(env: Env, id: String, sender: Address) {
-        let guard_key = soroban_sdk::Symbol::new(&env, &format!("reentrancy_guard_{}", id));
+        let guard_key = (soroban_sdk::Symbol::new(&env, "guard"), id.clone());
 
         // CHECK: Guard is not set
         if env.storage().instance().has(&guard_key) {
@@ -156,7 +157,7 @@ impl EscrowContract {
         // EFFECTS: Update state atomically before external calls
         escrow.state = EscrowState::Refunded;
         escrow.refunded_at = Some(env.ledger().timestamp());
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
 
         // INTERACTIONS: External calls (token transfers) happen here
         // env.invoke_contract(&token_contract, &transfer_fn, args);
@@ -177,7 +178,7 @@ impl EscrowContract {
         }
         escrow.state = EscrowState::Disputed;
         escrow.disputed_at = Some(env.ledger().timestamp());
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
     }
 
     /// Resolve dispute (Disputed -> Resolved)
@@ -192,12 +193,12 @@ impl EscrowContract {
         }
         escrow.state = EscrowState::Resolved;
         escrow.released_at = Some(env.ledger().timestamp());
-        env.storage().set(&id, &escrow);
+        env.storage().persistent().set(&id, &escrow);
     }
 
     /// Get escrow data
     pub fn get_escrow(env: Env, id: String) -> Escrow {
-        env.storage()
+        env.storage().persistent()
             .get(&id)
             .unwrap_or_else(|| panic!("Escrow not found"))
     }
@@ -233,7 +234,7 @@ impl EscrowContract {
 
     /// Validate state transition
     fn validate_transition(current_state: &EscrowState, next_state: EscrowState) {
-        match (current_state, next_state) {
+        match (current_state, next_state.clone()) {
             (EscrowState::Pending, EscrowState::Funded) => (),
             (EscrowState::Funded, EscrowState::Released) => (),
             (EscrowState::Funded, EscrowState::Refunded) => (),

@@ -141,25 +141,25 @@ flowchart TD
         Remittance["Remittance Fee Contract"]
     end
 
-    WebApp -->|1. Authenticate| SEP10
-    WebApp -->|2. Submit KYC| SEP12
-    WebApp -->|3. Initiate Remittance| SEP31
-    SEP31 -->|Screen Risk| AML
-    SEP31 -->|Submit Deposit| Relayer
-    Relayer -->|Sequence Lock| Redis
-    Relayer -->|Lock USDC| Escrow
+    WebApp -->|"1. Authenticate"| SEP10
+    WebApp -->|"2. Submit KYC"| SEP12
+    WebApp -->|"3. Initiate Remittance"| SEP31
+    SEP31 -->|"Screen Risk"| AML
+    SEP31 -->|"Submit Deposit"| Relayer
+    Relayer -->|"Sequence Lock"| Redis
+    Relayer -->|"Lock USDC"| Escrow
 
-    AgentUI -->|4. Payout Fiat & Sign Proof| Oracle
-    Oracle -->|5. release_to_agent()| Escrow
+    AgentUI -->|"4. Payout Fiat & Sign Proof"| Oracle
+    Oracle -->|"5. Release to Agent"| Escrow
 
-    Escrow -->|Emit Contract Events| Horizon
-    Listener -->|Ingest Events| Horizon
-    Listener -->|Save Checkpoint & State| Postgres
-    Recon -->|Compare On-Chain vs DB| Postgres
-    Recon -->|Query State| Escrow
+    Escrow -->|"Emit Contract Events"| Horizon
+    Listener -->|"Ingest Events"| Horizon
+    Listener -->|"Save Checkpoint & State"| Postgres
+    Recon -->|"Compare On-Chain vs DB"| Postgres
+    Recon -->|"Query State"| Escrow
 
-    WebApp -.->|Live Timeline Stream| SSEStream
-    Webhooks -->|Disbursement Webhook| AnchorAPI
+    WebApp -.->|"Live Timeline Stream"| SSEStream
+    Webhooks -->|"Disbursement Webhook"| AnchorAPI
 ```
 
 ---

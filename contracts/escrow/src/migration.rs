@@ -35,7 +35,7 @@
 
 #![allow(dead_code)]
 
-use soroban_sdk::{contracttype, Address, Env, Symbol};
+use soroban_sdk::{contracttype, contracterror, Address, Env, Symbol};
 
 // ---------------------------------------------------------------------------
 // Storage key constants
@@ -52,7 +52,7 @@ pub const KEY_ADMIN: &str = "admin";
 // ---------------------------------------------------------------------------
 
 /// Errors that can be returned by the migration entry point.
-#[contracttype]
+#[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum EscrowMigrationError {
     /// Caller is not the contract admin.
