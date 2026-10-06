@@ -54,7 +54,7 @@ RemitX is intended for diaspora senders, off-ramp payout agents, liquidity provi
 
 ### 🛡️ Smart Contract Escrow
 - **Non-Custodial Escrow:** Senders deposit USDC into Soroban contracts without custodial intermediary risk.
-- **Oracle Delivery Attestation:** Release of funds to off-ramp payout agents is gated by Ed25519-signed delivery receipts (`REMITX_ATTESTATION|...`).
+- **Arbitration & Dispute Resolution:** Built-in dispute mechanism where an assigned arbitrator can step in to resolve conflicts between sender and beneficiary.
 - **Deterministic Refund Timelocks:** Senders can autonomously claim 100% refunds if the off-ramp agent does not confirm delivery before a pre-set expiration timeout.
 - **Corridor Fee Engine:** Calculates fees and corridor exchange rates transparently on-chain.
 
@@ -77,9 +77,9 @@ RemitX is intended for diaspora senders, off-ramp payout agents, liquidity provi
 
 ### Blockchain & Smart Contracts
 - **Stellar Network:** Base settlement layer utilizing Horizon REST APIs and Soroban RPC.
-- **Soroban SDK (`v21.0.0` / `v20.5.0`):** Smart contract framework for WASM execution on Stellar.
+- **Soroban SDK (`v21.0.0`):** Smart contract framework for WASM execution on Stellar.
 - **Rust (2021 Edition):** Systems programming language used for smart contracts and the AML engine.
-- **Stellar CLI (`v21.0.0`):** Contract compilation and testnet deployment toolchain.
+- **Stellar CLI (`v28.1.0`):** Contract compilation and testnet deployment toolchain.
 
 ### Backend & Microservices
 - **Node.js (v20/v22 LTS):** JavaScript runtime.
@@ -236,7 +236,7 @@ To run the complete RemitX stack locally via Docker:
 For native host-level development (optional):
 - **Node.js:** `>= 20.10.0` (Node 22 LTS recommended)
 - **Rust Toolchain:** `>= 1.79.0` with `wasm32-unknown-unknown` target
-- **Stellar CLI:** `v21.0.0`
+- **Stellar CLI:** `v28.1.0`
 
 ---
 
@@ -435,35 +435,37 @@ Smart contracts are implemented in Rust targeting `wasm32-unknown-unknown` with 
 ### Primary Escrow Contract (`contracts/escrow/src/lib.rs`)
 
 ```rust
-pub trait EscrowTrait {
-    /// Initialize contract configuration, admin, and accepted asset token
-    fn initialize(env: Env, admin: Address, token: Address);
-
-    /// Deposit funds into escrow with recipient hash and timeout parameters
-    fn deposit_escrow(
-        env: Env,
-        sender: Address,
-        agent: Address,
-        amount: i128,
-        recipient_country: String,
-        recipient_account_hash: Bytes,
-        fiat_amount: i128,
-        fiat_currency: String,
-        exchange_rate: i128,
-        timeout_minutes: u32,
+#[contractimpl]
+impl EscrowContract {
+    /// Create a new escrow
+    pub fn create_escrow(
+        env: Env, id: String, sender: Address, beneficiary: Address,
+        arbitrator: Address, amount: i128, asset: String, timelock: u64,
     ) -> String;
 
-    /// Release USDC to payout agent upon valid Ed25519 oracle attestation
-    fn release_to_agent(env: Env, escrow_id: String, attestation: OracleAttestation);
+    /// Fund the escrow (Pending -> Funded)
+    pub fn fund_escrow(env: Env, id: String, sender: Address);
 
-    /// Claim refund after timeout window expires without confirmed attestation
-    fn claim_refund(env: Env, escrow_id: String);
+    /// Release funds to beneficiary (Funded -> Released)
+    pub fn release_escrow(env: Env, id: String, beneficiary: Address);
 
-    /// Cancel unfulfilled escrow (sender only, before fulfillment)
-    fn cancel_escrow(env: Env, escrow_id: String);
+    /// Refund funds to sender (Funded -> Refunded)
+    pub fn refund_escrow(env: Env, id: String, sender: Address);
 
-    /// Fetch current immutable escrow record
-    fn get_escrow(env: Env, escrow_id: String) -> Escrow;
+    /// Dispute the escrow (Funded -> Disputed)
+    pub fn dispute_escrow(env: Env, id: String, caller: Address);
+
+    /// Resolve dispute (Disputed -> Resolved)
+    pub fn resolve_dispute(env: Env, id: String, arbitrator: Address, _release_to_beneficiary: bool);
+
+    /// Get escrow data
+    pub fn get_escrow(env: Env, id: String) -> Escrow;
+
+    /// Initialise the contract and set the admin address
+    pub fn initialize(env: Env, admin: Address);
+    
+    /// Apply pending schema migrations after a WASM upgrade
+    pub fn migrate(env: Env, admin: Address) -> Result<(), EscrowMigrationError>;
 }
 ```
 
